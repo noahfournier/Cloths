@@ -1,6 +1,6 @@
 # Cloth
 
-[![MODNL](https://i.ibb.co/WWwF5Y5w/badge-mod.png)](https://discord.gg/8j2suEE9Mf)
+[MODNL](https://i.ibb.co/WWwF5Y5w/badge-mod.png)
 
 ![C#](https://img.shields.io/badge/language-C%23-blue)
 ![Made with Love](https://img.shields.io/badge/made%20with-%E2%9D%A4-ff69b4)
