@@ -24,6 +24,9 @@ Ce projet est propulsé par [**MODNL**](https://discord.gg/8j2suEE9Mf) et utilis
 ### Utilisation
 *Expliquer comment intéragir avec le plugin une fois en jeu*
 
+### Licence GNU GPLv3
+![GNU General Public License v3.0](https://i.ibb.co/KctHTfBM/Capture-d-cran-2025-05-02-145634.png)
+
 ## 🤝 Devenir contributeur
 Toute aide est la bienvenue, et nous encourageons les contributions de divers profils :
 
