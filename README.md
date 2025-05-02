@@ -58,34 +58,8 @@ Votre contribution, quelle qu'elle soit, est essentielle pour faire avancer ce p
 8. **Revue de Code** : Votre Pull Request sera revue par les mainteneurs du projet. Armez-vous d'un peu de patience et soyez prêt à apporter des modifications si nécessaire. Merci beaucoup !
 
 
-<div style="border: 2px solid rgb(255, 187, 0); padding: 10px; background-color:rgba(255, 166, 0, 0.05); border-radius: 5px;">
-  <strong>Important :</strong> Veuillez respecter l'arborescence du projet et suivre les conventions décrites dans chaque fichier <code>README.md</code> présent dans les différents dossiers.
-</div>
+*⚠️ **Important :** Veuillez respecter l'arborescence du projet et suivre les conventions décrites dans chaque fichier <code>README.md</code> présent dans les différents dossiers.*
 
-## 🦋 Contributeurs
-
-<div style="display: flex; flex-wrap: wrap; gap: 10px;">
-
-<div style="display: flex; align-items: center; flex: 1 1 calc(33.333% - 20px); margin-bottom: 10px;">
-    <a href="https://github.com/noahfournier">
-        <img src="https://github.com/noahfournier.png?size=40" alt="noahfournier" style="border-radius: 50%; width: 40px; height: 40px; margin-right: 10px;">
-    </a>
-    <div>
-        <a href="https://github.com/noahfournier" style="font-weight: bold;">@noahfournier</a><br>
-        <span style="font-size: 12px;">Développeur</span>
-    </div>
-</div>
-
-<div style="display: flex; align-items: center; flex: 1 1 calc(33.333% - 20px); margin-bottom: 10px;">
-    <a href="https://github.com/aarnow">
-        <img src="https://github.com/aarnow.png?size=40" alt="aarnow" style="border-radius: 50%; width: 40px; height: 40px; margin-right: 10px;">
-    </a>
-    <div>
-        <a href="https://github.com/aarnow" style="font-weight: bold;">@aarnow</a><br>
-        <span style="font-size: 12px;">Développeur</span>
-    </div>
-</div>
-    
-<div style="display: flex; align-items: center; flex: 1 1 calc(33.333% - 20px); margin-bottom: 10px;">
-</div>
-</div>
+## 🦋 Mainteneurs du projet
+[![noahfournier](https://avatars.githubusercontent.com/u/158089914?v=4&size=40)](https://github.com/noahfournier)
+[![aarnow](https://avatars.githubusercontent.com/u/150937845?v=4&size=40)](https://github.com/aarnow)
