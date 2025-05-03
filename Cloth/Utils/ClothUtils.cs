@@ -1,0 +1,155 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using Cloth.Entities;
+using Life.InventorySystem;
+using Life.Network;
+using Newtonsoft.Json;
+
+namespace Cloth.Utils
+{
+    public static class ClothUtils
+    {
+        public struct ClothModelStruct
+        {
+            /// <summary>
+            /// Identifier for the clothing item.
+            /// </summary>
+            public int ClothId { get; }
+
+            /// <summary>
+            /// Identifier for the type of clothing.
+            /// </summary>
+            public int ClothType { get; }
+
+            /// <summary>
+            /// Identifier for the gender associated with the clothing.
+            /// </summary>
+            public int SexId { get; }
+
+            /// <summary>
+            /// Name or label of the clothing item.
+            /// </summary>
+            public string Name { get; }
+
+            /// <summary>
+            /// Default unit price for clothing items that reference this model.
+            /// </summary>
+            public double Price { get; set; }
+
+            public ClothModelStruct(int clothId, int clothType, int sexId, string name, double price = 0)
+            {
+                ClothId = clothId;
+                ClothType = clothType;
+                SexId = sexId;
+                Name = name;
+                Price = price;
+            }
+        }
+
+        public static List<ClothModelStruct> BaseClothing = new List<ClothModelStruct>
+        {
+            new ClothModelStruct(3, (int)ClothType.Hat, 0, "Casquette de policier"),
+            new ClothModelStruct(4, (int)ClothType.Hat, 0, "Casque de pompier"),
+            new ClothModelStruct(5, (int)ClothType.Hat, 0, "Casque de protection"),
+            new ClothModelStruct(6, (int)ClothType.Hat, 0, "Casque du SWAT"),
+            new ClothModelStruct(7, (int)ClothType.Hat, 0, "Chapeau de cowboy"),
+            new ClothModelStruct(8, (int)ClothType.Hat, 0, "Bonnet de Noël"),
+            new ClothModelStruct(10, (int)ClothType.Shirt, 0, "Gilet de policier"),
+            new ClothModelStruct(11, (int)ClothType.Shirt, 0, "Manteau de pompier"),
+            new ClothModelStruct(12, (int)ClothType.Shirt, 0, "Blouse de médecin"),
+            new ClothModelStruct(13, (int)ClothType.Shirt, 0, "Gilet jaune"),
+            new ClothModelStruct(14, (int)ClothType.Shirt, 0, "Haut du SWAT"),
+            new ClothModelStruct(-1, (int)ClothType.Shirt, 0, "Torse nu"),
+            new ClothModelStruct(10, (int)ClothType.Pants, 0, "Pantalon de policier"),
+            new ClothModelStruct(11, (int)ClothType.Pants, 0, "Pantalon de pompier"),
+            new ClothModelStruct(12, (int)ClothType.Pants, 0, "Pantalon de médecin"),
+            new ClothModelStruct(13, (int)ClothType.Pants, 0, "Pantalon de chantier"),
+            new ClothModelStruct(14, (int)ClothType.Pants, 0, "Pantalon du SWAT"),
+            new ClothModelStruct(-1, (int)ClothType.Pants, 0, "Sous-vêtement"),
+            new ClothModelStruct(10, (int)ClothType.Shoes, 0, "Chaussures de policier"),
+            new ClothModelStruct(11, (int)ClothType.Shoes, 0, "Chaussures de pompier"),
+            new ClothModelStruct(12, (int)ClothType.Shoes, 0, "Chaussures de médecin"),
+            new ClothModelStruct(13, (int)ClothType.Shoes, 0, "Chaussures de chantier"),
+            new ClothModelStruct(14, (int)ClothType.Shoes, 0, "Chaussures du SWAT"),
+            new ClothModelStruct(-1, (int)ClothType.Shoes, 0, "Pieds nu"),
+            new ClothModelStruct(3, (int)ClothType.Hat, 1, "Casquette de policier"),
+            new ClothModelStruct(4, (int)ClothType.Hat, 1, "Casque de pompier"),
+            new ClothModelStruct(5, (int)ClothType.Hat, 1, "Casque de protection"),
+            new ClothModelStruct(6, (int)ClothType.Hat, 1, "Casque du SWAT"),
+            new ClothModelStruct(7, (int)ClothType.Hat, 1, "Chapeau de cowboy"),
+            new ClothModelStruct(8, (int)ClothType.Hat, 1, "Bonnet de Noël"),
+            new ClothModelStruct(10, (int)ClothType.Shirt, 1, "Gilet de policier"),
+            new ClothModelStruct(11, (int)ClothType.Shirt, 1, "Manteau de pompier"),
+            new ClothModelStruct(12, (int)ClothType.Shirt, 1, "Blouse de médecin"),
+            new ClothModelStruct(13, (int)ClothType.Shirt, 1, "Gilet jaune"),
+            new ClothModelStruct(14, (int)ClothType.Shirt, 1, "Haut du SWAT"),
+            new ClothModelStruct(-1, (int)ClothType.Shirt, 1, "Torse nu"),
+            new ClothModelStruct(9, (int)ClothType.Pants, 1, "Pantalon de policier"),
+            new ClothModelStruct(10, (int)ClothType.Pants, 1, "Pantalon de pompier"),
+            new ClothModelStruct(11, (int)ClothType.Pants, 1, "Pantalon de médecin"),
+            new ClothModelStruct(12, (int)ClothType.Pants, 1, "Pantalon de chantier"),
+            new ClothModelStruct(13, (int)ClothType.Pants, 1, "Pantalon du SWAT"),
+            new ClothModelStruct(-1, (int)ClothType.Pants, 1, "Sous-vêtement"),
+            new ClothModelStruct(10, (int)ClothType.Shoes, 1, "Chaussures de policier"),
+            new ClothModelStruct(11, (int)ClothType.Shoes, 1, "Chaussures de pompier"),
+            new ClothModelStruct(12, (int)ClothType.Shoes, 1, "Chaussures de médecin"),
+            new ClothModelStruct(13, (int)ClothType.Shoes, 1, "Chaussures de chantier"),
+            new ClothModelStruct(14, (int)ClothType.Shoes, 1, "Chaussures du SWAT"),
+            new ClothModelStruct(-1, (int)ClothType.Shoes, 1, "Pieds nu")
+        };
+
+        public static string GetClothName(ClothModel model)
+        {
+            var clothModel = BaseClothing.FirstOrDefault(c =>
+                c.ClothId == model.ClothId &&
+                c.ClothType == model.ClothType &&
+                c.SexId == model.SexId);
+
+            return clothModel.Name ?? "Inconnu";
+        }
+
+        /// <summary>
+        /// Equips the player with a specific clothing item.
+        /// </summary>
+        /// <param name="player">The player to equip.</param>
+        /// <param name="cloth">The clothing item to equip.</param>
+        public static async void EquipCloth(Player player, ClothItem cloth)
+        {
+            ClothModel model = await ClothModel.Query(cloth.ClothModelId);
+            if (model == null)
+            {
+                player.Notify("Cloth","Erreur lors de la récupération du modèle de votre vêtement",Life.NotificationManager.Type.Error);
+                return;
+            }
+
+            ClothData clothData = new ClothData();
+            if (model.ClothData != null) clothData = JsonConvert.DeserializeObject<ClothData>(model.ClothData);
+
+            switch (model.ClothType)
+            {
+                case (int)ClothType.Hat:
+                    player.setup.characterSkinData.Hat = model.ClothId;
+                    break;
+                case (int)ClothType.Accessory:
+                    player.setup.characterSkinData.Accessory = model.ClothId;
+                    break;
+                case (int)ClothType.Shirt:
+                    player.setup.characterSkinData.TShirt = model.ClothId;
+                    if (model.ClothData != null) player.setup.characterSkinData.tshirtData = clothData;
+                    break;
+                case (int)ClothType.Pants:
+                    player.setup.characterSkinData.Pants = model.ClothId;
+                    if (model.ClothData != null) player.setup.characterSkinData.pantsData = clothData;
+                    break;
+                case (int)ClothType.Shoes:
+                    player.setup.characterSkinData.Shoes = model.ClothId;
+                    break;
+                default:
+                    break;
+            }
+
+            player.character.Skin = player.setup.characterSkinData.SerializeToJson();
+            player.setup.RpcSkinChange(player.setup.characterSkinData);
+        }
+    }
+}
