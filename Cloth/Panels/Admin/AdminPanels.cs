@@ -31,7 +31,12 @@ namespace Cloth.Panels
 
             panel.AddTabLine($"{mk.Color("Générer un vêtement", mk.Colors.Verbose)}", _ =>
             {
-                //to do
+                //Consulter la liste des vêtements
+                //Choisir le sexe
+                //Choisir le type
+
+                //Choisir un vêtement dans la liste à générer
+                //Sinon recherche rapide selon le nom du vêtement
             });
 
             panel.AddButton("Retour", _ => AAMenu.AAMenu.menu.AdminPluginPanel(player));
@@ -40,10 +45,5 @@ namespace Cloth.Panels
 
             panel.Display();
         }
-
-        #region ClothModel
-        
-        #endregion
-
     }
 }

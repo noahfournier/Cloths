@@ -30,7 +30,7 @@ namespace Cloth
 
 
         /// <summary>
-        /// Gné
+        /// Initializes the database
         /// </summary>
         public async Task InitDatabase()
         {
@@ -40,6 +40,9 @@ namespace Cloth
             await Task.Delay(500);
         }
 
+        /// <summary>
+        /// Initializes the list of basic clothing items in the game from available data.
+        /// </summary>
         private async Task InitClothModels()
         {
             foreach (BuyableCloth c in Nova.server.buyableCloths)
@@ -52,6 +55,9 @@ namespace Cloth
             await Task.CompletedTask;
         }
 
+        /// <summary>
+        /// Adds native clothing items to the database if the table is empty.
+        /// </summary>
         private async void PopulateDb()
         {
             await InitDatabase();
@@ -75,6 +81,9 @@ namespace Cloth
             }
         }
 
+        /// <summary>
+        /// Generates and registers the plugin commands.
+        /// </summary>
         public void GenerateCommands()
         {
             new SChatCommand("/cloth", new string[] { "/cloth" }, "Permet d'ouvrir le panel du plugin \"Cloth\"", "/cloth", (player, arg) =>

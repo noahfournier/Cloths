@@ -6,6 +6,7 @@ namespace Cloth.Entities
     public class ClothModel : ModEntity<ClothModel>
     {
         [AutoIncrement][PrimaryKey] public int Id { get; set; }
+
         /// <summary>
         /// Identifier for the clothing item.
         /// </summary>

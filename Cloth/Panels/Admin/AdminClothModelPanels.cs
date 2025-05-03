@@ -22,7 +22,7 @@ namespace Cloth.Panels
 
         public void SelectSexIdPanel(Player player, ClothModel model)
         {
-            Panel panel = Context.PanelHelper.Create("Cloths - Créer un modèle <br> Choisir le sexe", UIPanel.PanelType.TabPrice, player, () => SelectSexIdPanel(player, model));
+            Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Créer un modèle", "Choisir le sexe"), UIPanel.PanelType.TabPrice, player, () => SelectSexIdPanel(player, model));
 
             panel.AddTabLine("Masculin", _ => model.SexId = 0);
             panel.AddTabLine("Féminin", _ => model.SexId = 1);
@@ -40,7 +40,7 @@ namespace Cloth.Panels
 
         public void SelectClothTypePanel(Player player, ClothModel model)
         {
-            Panel panel = Context.PanelHelper.Create("Cloths - Créer un modèle <br> Choisir le type", UIPanel.PanelType.TabPrice, player, () => SelectClothTypePanel(player, model));
+            Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Créer un modèle", "Choisir le type"), UIPanel.PanelType.TabPrice, player, () => SelectClothTypePanel(player, model));
 
             panel.AddTabLine($"{ClothType.Shirt}", _ => model.ClothType = (int)ClothType.Shirt);
             panel.AddTabLine($"{ClothType.Pants}", _ => model.ClothType = (int)ClothType.Pants);
@@ -58,7 +58,7 @@ namespace Cloth.Panels
 
         public void SelectClothIdPanel(Player player, ClothModel model)
         {
-            Panel panel = Context.PanelHelper.Create("Cloths - Créer un modèle <br> Choisir le vêtement de base", UIPanel.PanelType.TabPrice, player, () => SelectClothIdPanel(player, model));
+            Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Créer un modèle", "Choisir le vêtement de base"), UIPanel.PanelType.TabPrice, player, () => SelectClothIdPanel(player, model));
 
             foreach (var cloth in ClothUtils.BaseClothing)
             {
@@ -81,7 +81,7 @@ namespace Cloth.Panels
 
         public void SetClothDataPanel(Player player, ClothModel model)
         {
-            Panel panel = Context.PanelHelper.Create("Cloths - Créer un modèle <br> Choisir le flocage", UIPanel.PanelType.Input, player, () => SetClothDataPanel(player, model));
+            Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Créer un modèle", "Choisir le flocage"), UIPanel.PanelType.Input, player, () => SetClothDataPanel(player, model));
 
             panel.SetInputPlaceholder("Renseigner l'url du flocage à appliquer");
 
@@ -109,7 +109,7 @@ namespace Cloth.Panels
 
         public void SetPricePanel(Player player, ClothModel model)
         {
-            Panel panel = Context.PanelHelper.Create("Cloths - Créer un modèle <br> Définir le prix", UIPanel.PanelType.Input, player, () => SetPricePanel(player, model));
+            Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Créer un modèle", "Définir le prix"), UIPanel.PanelType.Input, player, () => SetPricePanel(player, model));
 
             panel.SetInputPlaceholder("Renseigner le prix en séparant les centimes par une virgule.");
 
@@ -134,7 +134,7 @@ namespace Cloth.Panels
 
         public void SetNamePanel(Player player, ClothModel model)
         {
-            Panel panel = Context.PanelHelper.Create("Cloths - Créer un modèle <br> Définir le nom", UIPanel.PanelType.Input, player, () => SetNamePanel(player, model));
+            Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Créer un modèle", "Définir le nom"), UIPanel.PanelType.Input, player, () => SetNamePanel(player, model));
 
             panel.SetInputPlaceholder("Renseigner le nom de ce modèle (3 caractères minimum)");
 
@@ -168,7 +168,7 @@ namespace Cloth.Panels
 
         public void NotifyClothModelCreatedPanel(Player player, ClothModel model)
         {
-            Panel panel = Context.PanelHelper.Create("Cloths - Créer un modèle <br> Votre modèle est prêt !", UIPanel.PanelType.TabPrice, player, () => NotifyClothModelCreatedPanel(player, model));
+            Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Créer un modèle", "Votre modèle est prêt !"), UIPanel.PanelType.TabPrice, player, () => NotifyClothModelCreatedPanel(player, model));
 
             panel.AddTabLine($"{mk.Color("Nom :", mk.Colors.Info)} {model.Name}", _ => { });
             panel.AddTabLine($"{mk.Color("Vêtement de base :", mk.Colors.Info)} {ClothUtils.GetClothName(model)}", _ => { });

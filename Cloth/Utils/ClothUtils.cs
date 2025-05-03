@@ -46,6 +46,9 @@ namespace Cloth.Utils
             }
         }
 
+        /// <summary>
+        /// List of the game's basic clothing items.
+        /// </summary>
         public static List<ClothModelStruct> BaseClothing = new List<ClothModelStruct>
         {
             new ClothModelStruct(3, (int)ClothType.Hat, 0, "Casquette de policier"),
@@ -98,6 +101,11 @@ namespace Cloth.Utils
             new ClothModelStruct(-1, (int)ClothType.Shoes, 1, "Pieds nu")
         };
 
+        /// <summary>
+        /// Gets the original name of a clothing model.
+        /// </summary>
+        /// <param name="model">The clothing model.</param>
+        /// <returns>The original name of the clothing model or "Unknown" if not found.</returns>
         public static string GetClothName(ClothModel model)
         {
             var clothModel = BaseClothing.FirstOrDefault(c =>
