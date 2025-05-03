@@ -1,9 +1,11 @@
-﻿using ModKit.ORM;
+﻿using System.Threading.Tasks;
+using Cloth.Cache;
+using ModKit.ORM;
 using SQLite;
 
 namespace Cloth.Entities
 {
-    public class ClothModel : ModEntity<ClothModel>
+    public class ClothModels : ModEntity<ClothModels>
     {
         [AutoIncrement][PrimaryKey] public int Id { get; set; }
 
@@ -47,8 +49,18 @@ namespace Cloth.Entities
         /// </summary>
         public long UpdatedAt { get; set; }
 
-        public ClothModel()
+        public ClothModels()
         {
+        }
+
+        public async Task<bool> Create()
+        {
+            
+            if(await Save())
+            {
+                Cloth.CacheManager.AddOrUpdateClothModel(this);
+                return true;
+            } else return false;
         }
     }
 }

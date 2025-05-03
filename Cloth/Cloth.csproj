@@ -69,12 +69,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cache\CacheManager.cs" />
     <Compile Include="Cloth.cs" />
-    <Compile Include="Entities\ClothModel.cs" />
-    <Compile Include="Entities\ClothItem.cs" />
+    <Compile Include="Entities\AreaInventories.cs" />
+    <Compile Include="Entities\CharacterInventories.cs" />
+    <Compile Include="Entities\ClothModels.cs" />
+    <Compile Include="Entities\ClothItems.cs" />
+    <Compile Include="Panels\Admin\AdminClothItemPanels.cs" />
     <Compile Include="Panels\Admin\AdminClothModelPanels.cs" />
     <Compile Include="Panels\Admin\AdminPanels.cs" />
-    <Compile Include="Panels\PanelUtils.cs" />
+    <Compile Include="Panels\Backpack\BackpackPanels.cs" />
+    <Compile Include="Panels\MainPanel.cs" />
+    <Compile Include="Utils\PanelUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\ClothUtils.cs" />
   </ItemGroup>

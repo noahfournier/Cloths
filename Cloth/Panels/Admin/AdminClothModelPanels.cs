@@ -9,7 +9,7 @@ using ModKit.Utils;
 using Newtonsoft.Json;
 using mk = ModKit.Helper.TextFormattingHelper;
 
-namespace Cloth.Panels
+namespace Cloth.Panels.Admin
 {
     public class AdminClothModelPanels
     {
@@ -20,7 +20,7 @@ namespace Cloth.Panels
             Context = context;
         }
 
-        public void SelectSexIdPanel(Player player, ClothModel model)
+        public void SelectSexIdPanel(Player player, ClothModels model)
         {
             Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Créer un modèle", "Choisir le sexe"), UIPanel.PanelType.TabPrice, player, () => SelectSexIdPanel(player, model));
 
@@ -38,7 +38,7 @@ namespace Cloth.Panels
             panel.Display();
         }
 
-        public void SelectClothTypePanel(Player player, ClothModel model)
+        public void SelectClothTypePanel(Player player, ClothModels model)
         {
             Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Créer un modèle", "Choisir le type"), UIPanel.PanelType.TabPrice, player, () => SelectClothTypePanel(player, model));
 
@@ -56,7 +56,7 @@ namespace Cloth.Panels
             panel.Display();
         }
 
-        public void SelectClothIdPanel(Player player, ClothModel model)
+        public void SelectClothIdPanel(Player player, ClothModels model)
         {
             Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Créer un modèle", "Choisir le vêtement de base"), UIPanel.PanelType.TabPrice, player, () => SelectClothIdPanel(player, model));
 
@@ -79,7 +79,7 @@ namespace Cloth.Panels
             panel.Display();
         }
 
-        public void SetClothDataPanel(Player player, ClothModel model)
+        public void SetClothDataPanel(Player player, ClothModels model)
         {
             Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Créer un modèle", "Choisir le flocage"), UIPanel.PanelType.Input, player, () => SetClothDataPanel(player, model));
 
@@ -107,7 +107,7 @@ namespace Cloth.Panels
             panel.Display();
         }
 
-        public void SetPricePanel(Player player, ClothModel model)
+        public void SetPricePanel(Player player, ClothModels model)
         {
             Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Créer un modèle", "Définir le prix"), UIPanel.PanelType.Input, player, () => SetPricePanel(player, model));
 
@@ -132,7 +132,7 @@ namespace Cloth.Panels
             panel.Display();
         }
 
-        public void SetNamePanel(Player player, ClothModel model)
+        public void SetNamePanel(Player player, ClothModels model)
         {
             Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Créer un modèle", "Définir le nom"), UIPanel.PanelType.Input, player, () => SetNamePanel(player, model));
 
@@ -144,7 +144,7 @@ namespace Cloth.Panels
                 if (panel.inputText != null && panel.inputText.Length >= 3)
                 {
                     model.Name = panel.inputText;
-                    if (await model.Save())
+                    if (await model.Create())
                     {
                         player.Notify("Cloths", "Succès lors de l'enregistrement de votre modèle", Life.NotificationManager.Type.Success);
                         NotifyClothModelCreatedPanel(player, model);
@@ -166,7 +166,7 @@ namespace Cloth.Panels
             panel.Display();
         }
 
-        public void NotifyClothModelCreatedPanel(Player player, ClothModel model)
+        public void NotifyClothModelCreatedPanel(Player player, ClothModels model)
         {
             Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Créer un modèle", "Votre modèle est prêt !"), UIPanel.PanelType.TabPrice, player, () => NotifyClothModelCreatedPanel(player, model));
 
@@ -180,7 +180,7 @@ namespace Cloth.Panels
 
             panel.AddButton("Prévisualiser", _ =>
             {
-                ClothItem clothItem = new ClothItem();
+                ClothItems clothItem = new ClothItems();
                 clothItem.ClothModelId = model.Id;
                 ClothUtils.EquipCloth(player, clothItem);
                 panel.Refresh();

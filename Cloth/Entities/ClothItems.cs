@@ -1,13 +1,19 @@
-﻿using ModKit.ORM;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using System;
+using ModKit.ORM;
 using SQLite;
 
 namespace Cloth.Entities
 {
-    public class ClothItem : ModEntity<ClothItem>
+    public class ClothItems : ModEntity<ClothItems>
     {
         [AutoIncrement][PrimaryKey] public int Id { get; set; }
 
-       public int ClothModelId { get; set; }
+        /// <summary>
+        /// Reference ClothModel
+        /// </summary>
+        public int ClothModelId { get; set; }
 
         /// <summary>
         /// Indicates whether the clothing item is dirty or not.
@@ -24,7 +30,7 @@ namespace Cloth.Entities
         /// </summary>
         public long UpdatedAt { get; set; }
 
-        public ClothItem()
+        public ClothItems()
         { 
         }
     }

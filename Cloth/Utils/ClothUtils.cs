@@ -106,7 +106,7 @@ namespace Cloth.Utils
         /// </summary>
         /// <param name="model">The clothing model.</param>
         /// <returns>The original name of the clothing model or "Unknown" if not found.</returns>
-        public static string GetClothName(ClothModel model)
+        public static string GetClothName(ClothModels model)
         {
             var clothModel = BaseClothing.FirstOrDefault(c =>
                 c.ClothId == model.ClothId &&
@@ -121,9 +121,9 @@ namespace Cloth.Utils
         /// </summary>
         /// <param name="player">The player to equip.</param>
         /// <param name="cloth">The clothing item to equip.</param>
-        public static async void EquipCloth(Player player, ClothItem cloth)
+        public static async void EquipCloth(Player player, ClothItems cloth)
         {
-            ClothModel model = await ClothModel.Query(cloth.ClothModelId);
+            ClothModels model = await ClothModels.Query(cloth.ClothModelId);
             if (model == null)
             {
                 player.Notify("Cloth","Erreur lors de la récupération du modèle de votre vêtement",Life.NotificationManager.Type.Error);
