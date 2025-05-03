@@ -86,10 +86,10 @@ namespace Cloth
         /// </summary>
         public void GenerateCommands()
         {
-            new SChatCommand("/cloth", new string[] { "/cloth" }, "Permet d'ouvrir le panel du plugin \"Cloth\"", "/cloth", (player, arg) =>
+            new SChatCommand("/cloths", new string[] { "/cloths" }, "Permet d'ouvrir le panel du plugin \"Cloths\"", "/cloths", (player, arg) =>
             {
                 if (player.IsAdmin) AdminPanels.AdminMenuPanel(player);
-                else player.Notify("Cloth", "Vous n'avez pas la permission requise.", NotificationManager.Type.Warning);
+                else player.Notify("Cloths", "Vous n'avez pas la permission requise.", NotificationManager.Type.Warning);
             }).Register();
         }
 
