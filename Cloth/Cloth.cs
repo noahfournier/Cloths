@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Cloth.Cache;
+using Cloth.Config;
 using Cloth.Entities;
 using Cloth.Panels;
 using Life;
@@ -26,7 +27,8 @@ namespace Cloth
         public async override void OnPluginInit()
         {
             base.OnPluginInit();
-           
+
+            await InitConfiguration();
             await InitDatabase();
             await InitClothModels();
             await PopulateDb();       
@@ -35,6 +37,19 @@ namespace Cloth
             GenerateCommands();
 
             ModKit.Internal.Logger.LogSuccess($"{PluginInformations.SourceName} v{PluginInformations.Version}", "initialisé");
+        }
+
+        /// <summary>
+        /// Initializes the configuration : https://github.com/Aarnow/NovaLife_ModKit-Releases/wiki/JsonHelper
+        /// </summary>
+        public async Task InitConfiguration()
+        {
+            var tasks = new List<Task>
+            {
+                Task.Run(() => ModKit.Helper.JsonHelper.JsonHelper.RegisterJson<ClothsConfig>()),
+            };
+
+            await Task.WhenAll(tasks);
         }
 
         /// <summary>
