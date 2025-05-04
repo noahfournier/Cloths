@@ -180,9 +180,8 @@ namespace Cloth.Panels.Admin
 
             panel.AddButton("Prévisualiser", _ =>
             {
-                ClothItems clothItem = new ClothItems();
-                clothItem.ClothModelId = model.Id;
-                ClothUtils.EquipCloth(player, clothItem);
+                
+                ClothUtils.PreviewClothing(player, model);
                 panel.Refresh();
             });
             // voir la page détail

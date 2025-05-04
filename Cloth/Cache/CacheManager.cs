@@ -38,7 +38,6 @@ namespace Cloth.Cache
 
         public void AddOrUpdateClothModel(ClothModels model)
         {
-            Console.WriteLine(model.Id);
             ClothModelsCache[model.Id] = model;
         }
     }

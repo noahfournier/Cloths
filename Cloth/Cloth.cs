@@ -26,8 +26,7 @@ namespace Cloth
         public async override void OnPluginInit()
         {
             base.OnPluginInit();
-
-            
+           
             await InitDatabase();
             await InitClothModels();
             await PopulateDb();       
@@ -100,7 +99,7 @@ namespace Cloth
         /// </summary>
         public void GenerateCommands()
         {
-            new SChatCommand("/cloths", new string[] { "/cloths" }, "Permet d'ouvrir le panel du plugin \"Cloths\"", "/cloths", (player, arg) =>
+            new SChatCommand("/cloths", new string[] { "/c" }, "Permet d'ouvrir le panel du plugin \"Cloths\"", "/cloths", (player, arg) =>
             {
                 MainPanel.MenuPanel(player);
             }).Register();

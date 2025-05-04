@@ -36,7 +36,7 @@ namespace Cloth.Panels.Admin
                 _adminClothItemPanels.SelectClothTypePanel(player);
             });
 
-            panel.AddButton("Retour", _ => AAMenu.AAMenu.menu.AdminPluginPanel(player));
+            panel.PreviousButton();
             panel.NextButton("Sélectionner", () => panel.SelectTab());
             panel.CloseButton();
 

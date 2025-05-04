@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ModKit.Internal;
 using ModKit.ORM;
 using SQLite;
 
@@ -30,65 +31,55 @@ namespace Cloth.Entities
         }
 
 
-        public static async Task<List<CharacterInventoryItem>> GetInventoryForCharacterAsync(int characterId)
+        public static async Task<List<ClothRecord>> GetInventoryForCharacterAsync(int characterId)
         {
-            var inventoryItems = new List<CharacterInventoryItem>();
+            var allClothRecords = new List<ClothRecord>();
             var connection = ModKit.ORM.Orm.GetOrmInstance().SqliteConnection;
 
-            if (connection == null)
-            {
-                throw new Exception("SQLiteAsyncConnection is not initialized.");
-            }
-
-            string query = @"
-            SELECT
-                ci.Id AS InventoryId,
-                ci.CharacterId,
-                ci.IsEquipped,
-                ci.ClothItemId,
-                cli.IsDirty,
-                clm.ClothId,
-                clm.ClothType,
-                clm.SexId,
-                clm.Name,
-                clm.ClothData,
-                clm.Price
-            FROM
-                CharacterInventories ci
-            JOIN
-                ClothItems cli ON ci.ClothItemId = cli.ClothItemId
-            JOIN
-                ClothModels clm ON cli.ClothModelId = clm.ClothId
-            WHERE
-                ci.CharacterId = ?";
-
+            if (connection == null) throw new Exception("SQLiteAsyncConnection is not initialized.");
+            
             try
             {
-                var results = await connection.QueryAsync<CharacterInventoryItem>(query, characterId);
-                inventoryItems.AddRange(results);
+                var characterInventories = await Query(i => i.CharacterId == characterId);
+
+                foreach (var item in characterInventories)
+                {
+                    var clothItem = await ClothItems.Query(item.ClothItemId);
+
+                    if (clothItem != null)
+                    {
+                        var clothModel = await ClothModels.Query(clothItem.ClothModelId);
+
+                        if (clothModel != null)
+                        {
+                            var clothRecord = new ClothRecord
+                            {
+                                CharacterInventories = item,
+                                ClothItems = clothItem,
+                                ClothModels = clothModel
+                            };
+
+                            allClothRecords.Add(clothRecord);
+                        }
+                        else Console.WriteLine($"ClothModel not found for ClothModelId: {clothItem.ClothModelId}");                    
+                    }
+                    else Console.WriteLine($"ClothItem not found for ClothItemId: {item.ClothItemId}");
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error executing query: {ex.Message}");
+                Logger.LogError("GetInventoryForCharacterAsync", $"{ex.Message}");
             }
 
-            return inventoryItems;
+            return allClothRecords;
         }
 
     }
 
-    public class CharacterInventoryItem
+    public class ClothRecord
     {
-        public int InventoryId { get; set; }
-        public int CharacterId { get; set; }
-        public bool IsEquipped { get; set; }
-        public int ClothItemId { get; set; }
-        public bool IsDirty { get; set; }
-        public int ClothId { get; set; }
-        public string ClothType { get; set; }
-        public int SexId { get; set; }
-        public string Name { get; set; }
-        public string ClothData { get; set; }
-        public float Price { get; set; }
+        public CharacterInventories CharacterInventories { get; set; }
+        public ClothItems ClothItems { get; set; }
+        public ClothModels ClothModels { get; set; }
     }
 }

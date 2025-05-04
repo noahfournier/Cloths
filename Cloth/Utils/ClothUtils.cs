@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Cloth.Entities;
+using Life.CharacterSystem;
 using Life.InventorySystem;
 using Life.Network;
 using Newtonsoft.Json;
+using static Life.InventorySystem.Item;
 
 namespace Cloth.Utils
 {
@@ -121,15 +124,41 @@ namespace Cloth.Utils
         /// </summary>
         /// <param name="player">The player to equip.</param>
         /// <param name="cloth">The clothing item to equip.</param>
-        public static async void EquipCloth(Player player, ClothItems cloth)
+        public static bool EquipClothing(Player player, ClothRecord clothRecord, ClothRecord equippedClothRecord)
         {
-            ClothModels model = await ClothModels.Query(cloth.ClothModelId);
-            if (model == null)
+            if (clothRecord.CharacterInventories.IsEquipped)
             {
-                player.Notify("Cloth","Erreur lors de la récupération du modèle de votre vêtement",Life.NotificationManager.Type.Error);
-                return;
+                player.Notify("Cloth", "Vous portez déjà ce vêtement", Life.NotificationManager.Type.Warning);
+                return false;
             }
 
+            if (clothRecord.ClothModels == null)
+            {
+                player.Notify("Cloth","Erreur lors de la récupération du modèle de votre vêtement",Life.NotificationManager.Type.Error);
+                return false;
+            }
+
+            ApplyClothData(player, clothRecord.ClothModels);
+
+            if(equippedClothRecord != null)
+            {
+                equippedClothRecord.CharacterInventories.IsEquipped = false;
+                equippedClothRecord.CharacterInventories.Save();
+            }
+            clothRecord.CharacterInventories.IsEquipped = true;
+            clothRecord.CharacterInventories.Save();
+
+            return true;
+        }
+
+        
+        public static void PreviewClothing(Player player, ClothModels model)
+        {
+            ApplyClothData(player, model);
+        }
+
+        private static void ApplyClothData(Player player, ClothModels model)
+        {
             ClothData clothData = new ClothData();
             if (model.ClothData != null) clothData = JsonConvert.DeserializeObject<ClothData>(model.ClothData);
 
@@ -144,10 +173,12 @@ namespace Cloth.Utils
                 case (int)ClothType.Shirt:
                     player.setup.characterSkinData.TShirt = model.ClothId;
                     if (model.ClothData != null) player.setup.characterSkinData.tshirtData = clothData;
+                    else player.setup.characterSkinData.tshirtData = new ClothData();
                     break;
                 case (int)ClothType.Pants:
                     player.setup.characterSkinData.Pants = model.ClothId;
                     if (model.ClothData != null) player.setup.characterSkinData.pantsData = clothData;
+                    else player.setup.characterSkinData.tshirtData = new ClothData();
                     break;
                 case (int)ClothType.Shoes:
                     player.setup.characterSkinData.Shoes = model.ClothId;
