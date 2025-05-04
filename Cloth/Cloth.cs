@@ -39,6 +39,7 @@ namespace Cloth
             ModKit.Internal.Logger.LogSuccess($"{PluginInformations.SourceName} v{PluginInformations.Version}", "initialisé");
         }
 
+        /// <summary>
         /// Initializes the configuration : https://github.com/Aarnow/NovaLife_ModKit-Releases/wiki/JsonHelper
         /// </summary>
         public async Task InitConfiguration()

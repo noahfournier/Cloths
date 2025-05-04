@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -47,9 +47,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>References\Mirror.dll</HintPath>
     </Reference>
-    <Reference Include="ModKit, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>References\ModKit.dll</HintPath>
+    <Reference Include="ModKit">
+      <HintPath>..\..\..\..\Desktop\ModKit.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -76,6 +75,7 @@
     <Compile Include="Cache\CacheManager.cs" />
     <Compile Include="Cache\ClothModelsCache.cs" />
     <Compile Include="Cloth.cs" />
+    <Compile Include="Config\ClothsConfig.cs" />
     <Compile Include="Entities\AreaInventories.cs" />
     <Compile Include="Entities\CharacterInventories.cs" />
     <Compile Include="Entities\ClothModels.cs" />
