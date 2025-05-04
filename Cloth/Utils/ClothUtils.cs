@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Cloth.Entities;
+using Life.CharacterSystem;
 using Life.InventorySystem;
 using Life.Network;
 using Newtonsoft.Json;
@@ -170,6 +172,8 @@ namespace Cloth.Utils
             ClothData clothData = new ClothData();
             if (model.ClothData != null) clothData = JsonConvert.DeserializeObject<ClothData>(model.ClothData);
 
+            Console.WriteLine(player.setup.characterSkinData.tshirtData.url);
+
             switch (model.ClothType)
             {
                 case (int)ClothType.Hat:
@@ -186,7 +190,7 @@ namespace Cloth.Utils
                 case (int)ClothType.Pants:
                     player.setup.characterSkinData.Pants = model.ClothId;
                     if (model.ClothData != null) player.setup.characterSkinData.pantsData = clothData;
-                    else player.setup.characterSkinData.tshirtData = new ClothData();
+                    else player.setup.characterSkinData.pantsData = new ClothData();
                     break;
                 case (int)ClothType.Shoes:
                     player.setup.characterSkinData.Shoes = model.ClothId;
@@ -194,6 +198,8 @@ namespace Cloth.Utils
                 default:
                     break;
             }
+
+            Console.WriteLine(player.setup.characterSkinData.tshirtData.url);
 
             player.character.Skin = player.setup.characterSkinData.SerializeToJson();
             player.setup.RpcSkinChange(player.setup.characterSkinData);
