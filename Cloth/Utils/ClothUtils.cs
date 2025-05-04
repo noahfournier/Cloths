@@ -172,8 +172,6 @@ namespace Cloth.Utils
             ClothData clothData = new ClothData();
             if (model.ClothData != null) clothData = JsonConvert.DeserializeObject<ClothData>(model.ClothData);
 
-            Console.WriteLine(player.setup.characterSkinData.tshirtData.url);
-
             switch (model.ClothType)
             {
                 case (int)ClothType.Hat:
@@ -198,8 +196,6 @@ namespace Cloth.Utils
                 default:
                     break;
             }
-
-            Console.WriteLine(player.setup.characterSkinData.tshirtData.url);
 
             player.character.Skin = player.setup.characterSkinData.SerializeToJson();
             player.setup.RpcSkinChange(player.setup.characterSkinData);
