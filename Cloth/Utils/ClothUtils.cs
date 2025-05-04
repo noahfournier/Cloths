@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Cloth.Entities;
+using Life.CharacterSystem;
 using Life.InventorySystem;
 using Life.Network;
 using Newtonsoft.Json;
@@ -186,7 +188,7 @@ namespace Cloth.Utils
                 case (int)ClothType.Pants:
                     player.setup.characterSkinData.Pants = model.ClothId;
                     if (model.ClothData != null) player.setup.characterSkinData.pantsData = clothData;
-                    else player.setup.characterSkinData.tshirtData = new ClothData();
+                    else player.setup.characterSkinData.pantsData = new ClothData();
                     break;
                 case (int)ClothType.Shoes:
                     player.setup.characterSkinData.Shoes = model.ClothId;
