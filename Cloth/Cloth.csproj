@@ -74,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cache\CacheManager.cs" />
+    <Compile Include="Cache\ClothModelsCache.cs" />
     <Compile Include="Cloth.cs" />
     <Compile Include="Entities\AreaInventories.cs" />
     <Compile Include="Entities\CharacterInventories.cs" />
@@ -91,6 +92,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <None Include="Cache\README.md" />
     <None Include="Config\README.md" />
     <None Include="Entities\README.md" />
     <None Include="Panels\README.md" />

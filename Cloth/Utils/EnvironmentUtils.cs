@@ -10,11 +10,15 @@ namespace Cloth.Utils
 {
     public static class EnvironmentUtils
     {
-        public static Dictionary<int, Player> Detect(Player player)
+        /// <summary>
+        /// Detects nearby players within a specified range.
+        /// </summary>
+        /// <param name="player">The player around whom to detect nearby players.</param>
+        /// <returns>A dictionary containing the IDs and Player objects of nearby players.</returns>
+        public static Dictionary<int, Player> DetectNearbyPlayers(Player player)
         {
             float range = 3.0f;
 
-            // Récupère tous les colliders dans un rayon autour du joueur
             Collider[] nearbyColliders = Physics.OverlapSphere(player.setup.transform.position, range);
             Dictionary<int, Player> nearbyPlayers = new Dictionary<int, Player>();
 

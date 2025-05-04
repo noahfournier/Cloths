@@ -13,7 +13,7 @@ namespace Cloth.Entities
         public int AreaId { get; set; }
 
         /// <summary>
-        /// Référence au ClothItem
+        /// Reference to ClothItem
         /// </summary>
         public int ClothItemId { get; set; }
 

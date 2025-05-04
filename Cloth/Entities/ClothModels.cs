@@ -58,7 +58,7 @@ namespace Cloth.Entities
             
             if(await Save())
             {
-                Cloth.CacheManager.AddOrUpdateClothModel(this);
+                Cloth.CacheManager.ClothModelsCache.AddOrUpdateClothModel(this);
                 return true;
             } else return false;
         }

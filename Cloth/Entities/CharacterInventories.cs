@@ -61,9 +61,9 @@ namespace Cloth.Entities
 
                             allClothRecords.Add(clothRecord);
                         }
-                        else Console.WriteLine($"ClothModel not found for ClothModelId: {clothItem.ClothModelId}");                    
+                        else Logger.LogError("GetInventoryForCharacterAsync", $"ClothModel not found for ClothModelId: {clothItem.ClothModelId}");                    
                     }
-                    else Console.WriteLine($"ClothItem not found for ClothItemId: {item.ClothItemId}");
+                    else Logger.LogError("GetInventoryForCharacterAsync", $"ClothItem not found for ClothItemId: {item.ClothItemId}");
                 }
             }
             catch (Exception ex)

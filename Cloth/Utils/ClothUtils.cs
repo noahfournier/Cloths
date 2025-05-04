@@ -123,7 +123,9 @@ namespace Cloth.Utils
         /// Equips the player with a specific clothing item.
         /// </summary>
         /// <param name="player">The player to equip.</param>
-        /// <param name="cloth">The clothing item to equip.</param>
+        /// <param name="clothRecord">The clothing item to equip.</param>
+        /// <param name="equippedClothRecord">The currently equipped clothing item, if any.</param>
+        /// <returns>True if the clothing item was equipped successfully, otherwise false.</returns>
         public static bool EquipClothing(Player player, ClothRecord clothRecord, ClothRecord equippedClothRecord)
         {
             if (clothRecord.CharacterInventories.IsEquipped)
@@ -151,12 +153,21 @@ namespace Cloth.Utils
             return true;
         }
 
-        
+        /// <summary>
+        /// Previews a clothing item on the player.
+        /// </summary>
+        /// <param name="player">The player on whom to preview the clothing item.</param>
+        /// <param name="model">The clothing model to preview.</param>
         public static void PreviewClothing(Player player, ClothModels model)
         {
             ApplyClothData(player, model);
         }
 
+        /// <summary>
+        /// Applies the data from a clothing model to the player.
+        /// </summary>
+        /// <param name="player">The player to whom the clothing data will be applied.</param>
+        /// <param name="model">The clothing model containing the data to be applied.</param>
         private static void ApplyClothData(Player player, ClothModels model)
         {
             ClothData clothData = new ClothData();

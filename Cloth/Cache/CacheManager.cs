@@ -1,44 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Cloth.Entities;
 using ModKit.Internal;
 
 namespace Cloth.Cache
 {
     public class CacheManager
     {
-        public Dictionary<int, ClothModels> ClothModelsCache = new Dictionary<int, ClothModels>();
+        public ClothModelsCache ClothModelsCache { get; set; }
 
 
         public CacheManager()
         {
+            ClothModelsCache = new ClothModelsCache();
         }
 
         public async Task InitializeCacheAsync()
         {
             try
             {
-                await RefreshClothModelsCache();
+                await ClothModelsCache.RefreshClothModelsCache();
             } catch (Exception ex)
             {
                 Logger.LogError("InitializeCacheAsync", ex.Message);
             }
-        }
-
-
-        public async Task RefreshClothModelsCache()
-        {
-            List<ClothModels> clothModels = await ClothModels.QueryAll();
-            foreach (var model in clothModels)
-            {
-                ClothModelsCache[model.Id] = model;
-            }
-        }
-
-        public void AddOrUpdateClothModel(ClothModels model)
-        {
-            ClothModelsCache[model.Id] = model;
-        }
+        } 
     }
 }
