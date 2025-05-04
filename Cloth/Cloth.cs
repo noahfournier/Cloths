@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Cloth.Cache;
 using Cloth.Entities;
 using Cloth.Panels;
 using Life;
@@ -11,33 +13,44 @@ namespace Cloth
 {
     public class Cloth : ModKit.ModKit
     {
-        AdminPanels AdminPanels { get; set; }
+        public static CacheManager CacheManager { get; set; }
+        MainPanel MainPanel { get; set; }
+        
         public Cloth(IGameAPI api) : base(api)
         {
             PluginInformations = new PluginInformations(AssemblyHelper.GetName(), "1.0.0", "Noah");
-            AdminPanels = new AdminPanels(this);
+            CacheManager = new CacheManager();
+            MainPanel = new MainPanel(this);
         }
 
-        public override void OnPluginInit()
+        public async override void OnPluginInit()
         {
             base.OnPluginInit();
+           
+            await InitDatabase();
+            await InitClothModels();
+            await PopulateDb();       
+            await CacheManager.InitializeCacheAsync();
 
-            PopulateDb();
             GenerateCommands();
 
             ModKit.Internal.Logger.LogSuccess($"{PluginInformations.SourceName} v{PluginInformations.Version}", "initialisé");
         }
-
 
         /// <summary>
         /// Initializes the database
         /// </summary>
         public async Task InitDatabase()
         {
-            Orm.RegisterTable<ClothModel>();
-            Orm.RegisterTable<ClothItem>();
+            var tasks = new List<Task>
+            {
+                Task.Run(() => Orm.RegisterTable<ClothModels>()),
+                Task.Run(() => Orm.RegisterTable<ClothItems>()),
+                Task.Run(() => Orm.RegisterTable<CharacterInventories>()),
+                Task.Run(() => Orm.RegisterTable<AreaInventories>())
+            };
 
-            await Task.Delay(500);
+            await Task.WhenAll(tasks);
         }
 
         /// <summary>
@@ -45,31 +58,31 @@ namespace Cloth
         /// </summary>
         private async Task InitClothModels()
         {
-            foreach (BuyableCloth c in Nova.server.buyableCloths)
+            var task = Task.Run(() =>
             {
-                Utils.ClothUtils.BaseClothing.Add(
-                    new Utils.ClothUtils.ClothModelStruct(c.clothId, c.clothType, c.sexId, c.name, c.price)
-                );
-            }
+                foreach (BuyableCloth c in Nova.server.buyableCloths)
+                {
+                    Utils.ClothUtils.BaseClothing.Add(
+                        new Utils.ClothUtils.ClothModelStruct(c.clothId, c.clothType, c.sexId, c.name, c.price)
+                    );
+                }
+            });
 
-            await Task.CompletedTask;
+            await task;
         }
 
         /// <summary>
         /// Adds native clothing items to the database if the table is empty.
         /// </summary>
-        private async void PopulateDb()
+        private async Task PopulateDb()
         {
-            await InitDatabase();
-            await InitClothModels();
-
-            var result = await ClothModel.QueryAll();
+            var result = await ClothModels.QueryAll();
 
             if (result.Count == 0)
             {
                 foreach (Utils.ClothUtils.ClothModelStruct c in Utils.ClothUtils.BaseClothing)
                 {
-                    ClothModel model = new ClothModel();
+                    ClothModels model = new ClothModels();
                     model.ClothId = c.ClothId;
                     model.ClothType = c.ClothType;
                     model.SexId = c.SexId;
@@ -86,10 +99,9 @@ namespace Cloth
         /// </summary>
         public void GenerateCommands()
         {
-            new SChatCommand("/cloths", new string[] { "/cloths" }, "Permet d'ouvrir le panel du plugin \"Cloths\"", "/cloths", (player, arg) =>
+            new SChatCommand("/cloths", new string[] { "/c" }, "Permet d'ouvrir le panel du plugin \"Cloths\"", "/cloths", (player, arg) =>
             {
-                if (player.IsAdmin) AdminPanels.AdminMenuPanel(player);
-                else player.Notify("Cloths", "Vous n'avez pas la permission requise.", NotificationManager.Type.Warning);
+                MainPanel.MenuPanel(player);
             }).Register();
         }
 

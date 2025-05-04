@@ -106,7 +106,7 @@ namespace Cloth.Utils
         /// </summary>
         /// <param name="model">The clothing model.</param>
         /// <returns>The original name of the clothing model or "Unknown" if not found.</returns>
-        public static string GetClothName(ClothModel model)
+        public static string GetClothName(ClothModels model)
         {
             var clothModel = BaseClothing.FirstOrDefault(c =>
                 c.ClothId == model.ClothId &&
@@ -120,16 +120,53 @@ namespace Cloth.Utils
         /// Equips the player with a specific clothing item.
         /// </summary>
         /// <param name="player">The player to equip.</param>
-        /// <param name="cloth">The clothing item to equip.</param>
-        public static async void EquipCloth(Player player, ClothItem cloth)
+        /// <param name="clothRecord">The clothing item to equip.</param>
+        /// <param name="equippedClothRecord">The currently equipped clothing item, if any.</param>
+        /// <returns>True if the clothing item was equipped successfully, otherwise false.</returns>
+        public static bool EquipClothing(Player player, ClothRecord clothRecord, ClothRecord equippedClothRecord)
         {
-            ClothModel model = await ClothModel.Query(cloth.ClothModelId);
-            if (model == null)
+            if (clothRecord.CharacterInventories.IsEquipped)
             {
-                player.Notify("Cloth","Erreur lors de la récupération du modèle de votre vêtement",Life.NotificationManager.Type.Error);
-                return;
+                player.Notify("Cloth", "Vous portez déjà ce vêtement", Life.NotificationManager.Type.Warning);
+                return false;
             }
 
+            if (clothRecord.ClothModels == null)
+            {
+                player.Notify("Cloth","Erreur lors de la récupération du modèle de votre vêtement",Life.NotificationManager.Type.Error);
+                return false;
+            }
+
+            ApplyClothData(player, clothRecord.ClothModels);
+
+            if(equippedClothRecord != null)
+            {
+                equippedClothRecord.CharacterInventories.IsEquipped = false;
+                equippedClothRecord.CharacterInventories.Save();
+            }
+            clothRecord.CharacterInventories.IsEquipped = true;
+            clothRecord.CharacterInventories.Save();
+
+            return true;
+        }
+
+        /// <summary>
+        /// Previews a clothing item on the player.
+        /// </summary>
+        /// <param name="player">The player on whom to preview the clothing item.</param>
+        /// <param name="model">The clothing model to preview.</param>
+        public static void PreviewClothing(Player player, ClothModels model)
+        {
+            ApplyClothData(player, model);
+        }
+
+        /// <summary>
+        /// Applies the data from a clothing model to the player.
+        /// </summary>
+        /// <param name="player">The player to whom the clothing data will be applied.</param>
+        /// <param name="model">The clothing model containing the data to be applied.</param>
+        private static void ApplyClothData(Player player, ClothModels model)
+        {
             ClothData clothData = new ClothData();
             if (model.ClothData != null) clothData = JsonConvert.DeserializeObject<ClothData>(model.ClothData);
 
@@ -144,10 +181,12 @@ namespace Cloth.Utils
                 case (int)ClothType.Shirt:
                     player.setup.characterSkinData.TShirt = model.ClothId;
                     if (model.ClothData != null) player.setup.characterSkinData.tshirtData = clothData;
+                    else player.setup.characterSkinData.tshirtData = new ClothData();
                     break;
                 case (int)ClothType.Pants:
                     player.setup.characterSkinData.Pants = model.ClothId;
                     if (model.ClothData != null) player.setup.characterSkinData.pantsData = clothData;
+                    else player.setup.characterSkinData.tshirtData = new ClothData();
                     break;
                 case (int)ClothType.Shoes:
                     player.setup.characterSkinData.Shoes = model.ClothId;
