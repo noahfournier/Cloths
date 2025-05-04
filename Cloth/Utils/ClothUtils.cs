@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Cloth.Entities;
-using Life.CharacterSystem;
 using Life.InventorySystem;
 using Life.Network;
 using Newtonsoft.Json;
-using static Life.InventorySystem.Item;
 
 namespace Cloth.Utils
 {

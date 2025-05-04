@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Cloth.Cache;
 using ModKit.ORM;
 using SQLite;
 

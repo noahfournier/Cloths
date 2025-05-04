@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using System;
-using ModKit.ORM;
+﻿using ModKit.ORM;
 using SQLite;
 
 namespace Cloth.Entities
