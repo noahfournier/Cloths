@@ -31,7 +31,12 @@ namespace Cloth.Entities
         {
         }
 
-
+        /// <summary>
+        /// Retrieves the clothing inventory for a specific character.
+        /// </summary>
+        /// <param name="characterId">The identifier of the character.</param>
+        /// <param name="isEquipped">Indicates whether only equipped clothing items should be retrieved. Default is false.</param>
+        /// <returns>A list of <see cref="ClothRecord"/> representing the character's clothing inventory.</returns>
         public static async Task<List<ClothRecord>> GetInventoryForCharacterAsync(int characterId, bool isEquipped = false)
         {
             var allClothRecords = new List<ClothRecord>();
@@ -74,6 +79,12 @@ namespace Cloth.Entities
             return allClothRecords;
         }
 
+        /// <summary>
+        /// Retrieves the equipped clothing record for a specific character and cloth type.
+        /// </summary>
+        /// <param name="characterId">The identifier of the character.</param>
+        /// <param name="clothType">The type of the clothing item.</param>
+        /// <returns>A <see cref="ClothRecord"/> representing the equipped clothing item, or null if not found.</returns>
         public static async Task<ClothRecord> GetEquippedClothRecordByClothTypeAsync(int characterId, int clothType)
         {
             ClothRecord clothRecord = null;

@@ -2,7 +2,7 @@
 {
     public class EventManager
     {
-        private PeriodicEvents _periodicEvents { get; }
+        private PeriodicEvents _periodicEvents;
 
         public EventManager()
         {

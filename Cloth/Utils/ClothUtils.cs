@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Cloth.Entities;
@@ -157,10 +156,12 @@ namespace Cloth.Utils
         }
 
         /// <summary>
-        /// Applies the data from a clothing model to the player.
+        /// Applies the data from a clothing model to the player. If <paramref name="isPreview"/> is true,
+        /// the changes are applied after a delay and only if the clothing item is equipped.
         /// </summary>
         /// <param name="player">The player to whom the clothing data will be applied.</param>
         /// <param name="model">The clothing model containing the data to be applied.</param>
+        /// <param name="isPreview">Indicates whether the changes are a preview. Default is false.</param>
         private static void ApplyClothData(Player player, ClothModels model, bool isPreview = false)
         {
             
@@ -168,9 +169,13 @@ namespace Cloth.Utils
             {
                 Task.Run(async () =>
                 {
-                    await Task.Delay(6000);
                     ClothRecord record = await CharacterInventories.GetEquippedClothRecordByClothTypeAsync(player.character.Id, model.ClothType);
-                    if(record != null) ApplyClothData(player, record.ClothModels);
+                    if(record != null)
+                    {
+                        await Task.Delay(6000);
+                        player.Notify("Cloths", "Prévisualisation en cours", Life.NotificationManager.Type.Info, 6);
+                        ApplyClothData(player, record.ClothModels);
+                    }
                 });
             }
 

@@ -15,7 +15,7 @@ namespace Cloth
 {
     public class Cloth : ModKit.ModKit
     {
-        private EventManager _eventManager { get; }
+        private EventManager EventManager { get; }
         public static CacheManager CacheManager { get; set; }
         
         MainPanel MainPanel { get; }
@@ -23,7 +23,7 @@ namespace Cloth
         public Cloth(IGameAPI api) : base(api)
         {
             PluginInformations = new PluginInformations(AssemblyHelper.GetName(), "1.0.0", "Noah");
-            _eventManager = new EventManager();
+            EventManager = new EventManager();
             CacheManager = new CacheManager();
             MainPanel = new MainPanel(this);
         }
