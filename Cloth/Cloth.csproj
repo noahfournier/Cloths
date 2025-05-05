@@ -81,6 +81,8 @@
     <Compile Include="Entities\CharacterInventories.cs" />
     <Compile Include="Entities\ClothModels.cs" />
     <Compile Include="Entities\ClothItems.cs" />
+    <Compile Include="Events\EventManager.cs" />
+    <Compile Include="Events\EventHandlers\PeriodicEvents.cs" />
     <Compile Include="Panels\Admin\AdminClothItemPanels.cs" />
     <Compile Include="Panels\Admin\AdminClothModelPanels.cs" />
     <Compile Include="Panels\Admin\AdminPanels.cs" />
@@ -96,6 +98,7 @@
     <None Include="Cache\README.md" />
     <None Include="Config\README.md" />
     <None Include="Entities\README.md" />
+    <None Include="Events\README.md" />
     <None Include="Panels\README.md" />
     <None Include="References\README.md" />
     <None Include="Utils\README.md" />

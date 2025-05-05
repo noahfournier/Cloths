@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Cloth.Cache;
 using Cloth.Config;
 using Cloth.Entities;
+using Cloth.Events;
 using Cloth.Panels;
 using Life;
 using Life.Network;
@@ -14,12 +15,15 @@ namespace Cloth
 {
     public class Cloth : ModKit.ModKit
     {
+        private EventManager EventManager { get; }
         public static CacheManager CacheManager { get; set; }
-        MainPanel MainPanel { get; set; }
+        
+        MainPanel MainPanel { get; }
         
         public Cloth(IGameAPI api) : base(api)
         {
             PluginInformations = new PluginInformations(AssemblyHelper.GetName(), "1.0.0", "Noah");
+            EventManager = new EventManager();
             CacheManager = new CacheManager();
             MainPanel = new MainPanel(this);
         }

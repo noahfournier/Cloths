@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Life.InventorySystem;
 using ModKit.Internal;
 using ModKit.ORM;
 using SQLite;
@@ -29,7 +30,6 @@ namespace Cloth.Entities
         public CharacterInventories()
         {
         }
-
 
         /// <summary>
         /// Retrieves the clothing inventory for a specific character.
@@ -78,6 +78,50 @@ namespace Cloth.Entities
 
             return allClothRecords;
         }
+
+        /// <summary>
+        /// Retrieves the equipped clothing record for a specific character and cloth type.
+        /// </summary>
+        /// <param name="characterId">The identifier of the character.</param>
+        /// <param name="clothType">The type of the clothing item.</param>
+        /// <returns>A <see cref="ClothRecord"/> representing the equipped clothing item, or null if not found.</returns>
+        public static async Task<ClothRecord> GetEquippedClothRecordByClothTypeAsync(int characterId, int clothType)
+        {
+            ClothRecord clothRecord = null;
+
+            try
+            {
+                var characterInventories = await Query(i => i.CharacterId == characterId && i.IsEquipped);
+
+                foreach (var item in characterInventories)
+                {
+                    var clothItem = await ClothItems.Query(item.ClothItemId);
+
+                    if (clothItem != null)
+                    {
+                        var clothModel = await ClothModels.Query(clothItem.ClothModelId);
+
+                        if (clothModel != null && clothModel.ClothType == clothType)
+                        {
+                            return new ClothRecord
+                            {
+                                CharacterInventories = item,
+                                ClothItems = clothItem,
+                                ClothModels = clothModel
+                            };
+                        }
+                    }
+                    else Logger.LogError("GetEquippedClothRecordByTypeAsync", $"ClothItem not found for ClothItemId: {item.ClothItemId}");                   
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError("GetEquippedClothRecordByTypeAsync", $"{ex.Message}");
+            }
+
+            return clothRecord;
+        }
+
 
     }
 
