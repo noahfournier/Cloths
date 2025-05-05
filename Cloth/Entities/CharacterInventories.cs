@@ -31,16 +31,21 @@ namespace Cloth.Entities
         }
 
 
-        public static async Task<List<ClothRecord>> GetInventoryForCharacterAsync(int characterId)
+        /// <summary>
+        /// Retrieves the clothing inventory for a specific character.
+        /// </summary>
+        /// <param name="characterId">The identifier of the character.</param>
+        /// <param name="isEquipped">Indicates whether only equipped clothing items should be retrieved. Default is false.</param>
+        /// <returns>A list of <see cref="ClothRecord"/> representing the character's clothing inventory.</returns>
+        public static async Task<List<ClothRecord>> GetInventoryForCharacterAsync(int characterId, bool isEquipped = false)
         {
             var allClothRecords = new List<ClothRecord>();
-            var connection = ModKit.ORM.Orm.GetOrmInstance().SqliteConnection;
 
-            if (connection == null) throw new Exception("SQLiteAsyncConnection is not initialized.");
-            
             try
             {
-                var characterInventories = await Query(i => i.CharacterId == characterId);
+                var characterInventories = isEquipped ?
+                    await Query(i => i.CharacterId == characterId && i.IsEquipped) :
+                    await Query(i => i.CharacterId == characterId);
 
                 foreach (var item in characterInventories)
                 {
@@ -61,7 +66,7 @@ namespace Cloth.Entities
 
                             allClothRecords.Add(clothRecord);
                         }
-                        else Logger.LogError("GetInventoryForCharacterAsync", $"ClothModel not found for ClothModelId: {clothItem.ClothModelId}");                    
+                        else Logger.LogError("GetInventoryForCharacterAsync", $"ClothModel not found for ClothModelId: {clothItem.ClothModelId}");
                     }
                     else Logger.LogError("GetInventoryForCharacterAsync", $"ClothItem not found for ClothItemId: {item.ClothItemId}");
                 }
