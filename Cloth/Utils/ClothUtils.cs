@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Cloth.Entities;
@@ -172,7 +173,7 @@ namespace Cloth.Utils
                     ClothRecord record = await CharacterInventories.GetEquippedClothRecordByClothTypeAsync(player.character.Id, model.ClothType);
                     if(record != null)
                     {
-                        await Task.Delay(6000);
+                        await Task.Delay(TimeSpan.FromSeconds(Config.ClothsConfig.Data.PreviewDurationOnSeconds));
                         player.Notify("Cloths", "Prévisualisation en cours", Life.NotificationManager.Type.Info, 6);
                         ApplyClothData(player, record.ClothModels);
                     }
