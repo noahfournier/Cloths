@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Life.InventorySystem;
 using ModKit.Internal;
 using ModKit.ORM;
 using SQLite;
@@ -31,16 +32,15 @@ namespace Cloth.Entities
         }
 
 
-        public static async Task<List<ClothRecord>> GetInventoryForCharacterAsync(int characterId)
+        public static async Task<List<ClothRecord>> GetInventoryForCharacterAsync(int characterId, bool isEquipped = false)
         {
             var allClothRecords = new List<ClothRecord>();
-            var connection = ModKit.ORM.Orm.GetOrmInstance().SqliteConnection;
-
-            if (connection == null) throw new Exception("SQLiteAsyncConnection is not initialized.");
             
             try
             {
-                var characterInventories = await Query(i => i.CharacterId == characterId);
+                var characterInventories = isEquipped ?
+                    await Query(i => i.CharacterId == characterId && i.IsEquipped) :
+                    await Query(i => i.CharacterId == characterId);
 
                 foreach (var item in characterInventories)
                 {
@@ -73,6 +73,44 @@ namespace Cloth.Entities
 
             return allClothRecords;
         }
+
+        public static async Task<ClothRecord> GetEquippedClothRecordByClothTypeAsync(int characterId, int clothType)
+        {
+            ClothRecord clothRecord = null;
+
+            try
+            {
+                var characterInventories = await Query(i => i.CharacterId == characterId && i.IsEquipped);
+
+                foreach (var item in characterInventories)
+                {
+                    var clothItem = await ClothItems.Query(item.ClothItemId);
+
+                    if (clothItem != null)
+                    {
+                        var clothModel = await ClothModels.Query(clothItem.ClothModelId);
+
+                        if (clothModel != null && clothModel.ClothType == clothType)
+                        {
+                            return new ClothRecord
+                            {
+                                CharacterInventories = item,
+                                ClothItems = clothItem,
+                                ClothModels = clothModel
+                            };
+                        }
+                    }
+                    else Logger.LogError("GetEquippedClothRecordByTypeAsync", $"ClothItem not found for ClothItemId: {item.ClothItemId}");                   
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError("GetEquippedClothRecordByTypeAsync", $"{ex.Message}");
+            }
+
+            return clothRecord;
+        }
+
 
     }
 
