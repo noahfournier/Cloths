@@ -1,7 +1,4 @@
-﻿using System;
-using Cloth.Entities;
-using System.Collections.Generic;
-using Life;
+﻿using System.Collections.Generic;
 using Life.CharacterSystem;
 using Life.Network;
 using UnityEngine;

@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Cloth.Entities;
-using Life.CharacterSystem;
 using Life.InventorySystem;
 using Life.Network;
 using Newtonsoft.Json;
@@ -125,14 +124,8 @@ namespace Cloth.Utils
         /// <param name="clothRecord">The clothing item to equip.</param>
         /// <param name="equippedClothRecord">The currently equipped clothing item, if any.</param>
         /// <returns>True if the clothing item was equipped successfully, otherwise false.</returns>
-        public static bool EquipClothing(Player player, ClothRecord clothRecord, ClothRecord equippedClothRecord)
+        public static bool EquipClothing(Player player, ClothRecord clothRecord, ClothRecord equippedClothRecord = null)
         {
-            if (clothRecord.CharacterInventories.IsEquipped)
-            {
-                player.Notify("Cloth", "Vous portez déjà ce vêtement", Life.NotificationManager.Type.Warning);
-                return false;
-            }
-
             if (clothRecord.ClothModels == null)
             {
                 player.Notify("Cloth","Erreur lors de la récupération du modèle de votre vêtement",Life.NotificationManager.Type.Error);
@@ -159,16 +152,33 @@ namespace Cloth.Utils
         /// <param name="model">The clothing model to preview.</param>
         public static void PreviewClothing(Player player, ClothModels model)
         {
-            ApplyClothData(player, model);
+            ApplyClothData(player, model, true);
         }
 
         /// <summary>
-        /// Applies the data from a clothing model to the player.
+        /// Applies the data from a clothing model to the player. If <paramref name="isPreview"/> is true,
+        /// the changes are applied after a delay and only if the clothing item is equipped.
         /// </summary>
         /// <param name="player">The player to whom the clothing data will be applied.</param>
         /// <param name="model">The clothing model containing the data to be applied.</param>
-        private static void ApplyClothData(Player player, ClothModels model)
+        /// <param name="isPreview">Indicates whether the changes are a preview. Default is false.</param>
+        private static void ApplyClothData(Player player, ClothModels model, bool isPreview = false)
         {
+            
+            if (isPreview)
+            {
+                Task.Run(async () =>
+                {
+                    ClothRecord record = await CharacterInventories.GetEquippedClothRecordByClothTypeAsync(player.character.Id, model.ClothType);
+                    if(record != null)
+                    {
+                        await Task.Delay(6000);
+                        player.Notify("Cloths", "Prévisualisation en cours", Life.NotificationManager.Type.Info, 6);
+                        ApplyClothData(player, record.ClothModels);
+                    }
+                });
+            }
+
             ClothData clothData = new ClothData();
             if (model.ClothData != null) clothData = JsonConvert.DeserializeObject<ClothData>(model.ClothData);
 
@@ -197,7 +207,7 @@ namespace Cloth.Utils
                     break;
             }
 
-            player.character.Skin = player.setup.characterSkinData.SerializeToJson();
+            if(!isPreview) player.character.Skin = player.setup.characterSkinData.SerializeToJson();
             player.setup.RpcSkinChange(player.setup.characterSkinData);
         }
     }
