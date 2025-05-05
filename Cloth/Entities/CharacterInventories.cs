@@ -40,7 +40,7 @@ namespace Cloth.Entities
         public static async Task<List<ClothRecord>> GetInventoryForCharacterAsync(int characterId, bool isEquipped = false)
         {
             var allClothRecords = new List<ClothRecord>();
-            
+
             try
             {
                 var characterInventories = isEquipped ?
@@ -66,7 +66,7 @@ namespace Cloth.Entities
 
                             allClothRecords.Add(clothRecord);
                         }
-                        else Logger.LogError("GetInventoryForCharacterAsync", $"ClothModel not found for ClothModelId: {clothItem.ClothModelId}");                    
+                        else Logger.LogError("GetInventoryForCharacterAsync", $"ClothModel not found for ClothModelId: {clothItem.ClothModelId}");
                     }
                     else Logger.LogError("GetInventoryForCharacterAsync", $"ClothItem not found for ClothItemId: {item.ClothItemId}");
                 }

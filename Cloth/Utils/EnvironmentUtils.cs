@@ -12,7 +12,7 @@ namespace Cloth.Utils
         /// </summary>
         /// <param name="player">The player around whom to detect nearby players.</param>
         /// <returns>A dictionary containing the IDs and Player objects of nearby players.</returns>
-        public static Dictionary<int, Player> DetectNearbyPlayers(Player player)
+        public static Dictionary<int, Player> DetectNearbyPlayers(Player player, bool withSelf = true)
         {
             float range = 3.0f;
 
@@ -27,6 +27,8 @@ namespace Cloth.Utils
                     nearbyPlayers[characterSetup.player.character.Id] = characterSetup.player;
                 }
             }
+
+            if(!withSelf) nearbyPlayers.Remove(player.character.Id);
 
             return nearbyPlayers;
         }
