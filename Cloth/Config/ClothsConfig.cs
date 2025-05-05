@@ -1,10 +1,10 @@
 ﻿namespace Cloth.Config
 {
-    /// <summary>
-    /// Config data : https://github.com/Aarnow/NovaLife_ModKit-Releases/wiki/JsonHelper
-    /// </summary>
     public class ClothsConfig : ModKit.Helper.JsonHelper.JsonEntity<ClothsConfig>
     {
+        /// <summary>
+        /// Maximum quantity of clothes in a backpack
+        /// </summary>
         public int MaxBackpackSlots = 10;
     }
 }
