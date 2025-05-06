@@ -215,17 +215,17 @@ namespace Cloth.Utils
             switch (type)
             {
                 case ClothType.Hat:
-                    return "Chapeau";
+                    return "Chapeaux";
                 case ClothType.Accessory:
-                    return "Accessoire";
+                    return "Accessoires";
                 case ClothType.Shirt:
-                    return "T-Shirt";
+                    return "T-Shirts";
                 case ClothType.Pants:
-                    return "Pantalon";
+                    return "Pantalons";
                 case ClothType.Shoes:
                     return "Chaussures";
                 default:
-                    return "null";
+                    return "Inconnu";
             }
         }
     }
