@@ -210,5 +210,23 @@ namespace Cloth.Utils
             if(!isPreview) player.character.Skin = player.setup.characterSkinData.SerializeToJson();
             player.setup.RpcSkinChange(player.setup.characterSkinData);
         }
+        public static string ClothTypeTranslater(ClothType type)
+        {
+            switch (type)
+            {
+                case ClothType.Hat:
+                    return "Chapeaux";
+                case ClothType.Accessory:
+                    return "Accessoires";
+                case ClothType.Shirt:
+                    return "T-Shirts";
+                case ClothType.Pants:
+                    return "Pantalons";
+                case ClothType.Shoes:
+                    return "Chaussures";
+                default:
+                    return "Inconnu";
+            }
+        }
     }
 }
