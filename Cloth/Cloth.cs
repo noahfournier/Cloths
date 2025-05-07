@@ -7,9 +7,11 @@ using Cloth.Events;
 using Cloth.Panels;
 using Life;
 using Life.Network;
+using _menu = AAMenu.Menu;
 using ModKit.Helper;
 using ModKit.Interfaces;
 using ModKit.Utils;
+using Cloth.Utils;
 
 namespace Cloth
 {
@@ -39,6 +41,7 @@ namespace Cloth
             await CacheManager.InitializeCacheAsync();
 
             GenerateCommands();
+            InsertMenu();
 
             ModKit.Internal.Logger.LogSuccess($"{PluginInformations.SourceName} v{PluginInformations.Version}", "initialisé");
         }
@@ -122,7 +125,12 @@ namespace Cloth
             {
                 MainPanel.MenuPanel(player);
             }).Register();
-        }
 
+            new SChatCommand("/mask", new string[] { "/masque" }, "Permet de porter ou retirer un masque noir", "/mask", (player, arg) =>
+            {
+                ClothUtils.ToggleBlackMask(player);
+            });
+        }
+        
     }
 }

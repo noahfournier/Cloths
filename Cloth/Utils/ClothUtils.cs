@@ -228,5 +228,49 @@ namespace Cloth.Utils
                     return "Inconnu";
             }
         }
+
+        /// <summary>
+        /// Toggles a black mouth mask on the player. 
+        /// If the player is not currently wearing the mask, it is equipped; otherwise, it is removed.
+        /// </summary>
+        /// <param name="player">The player whose mask status will be toggled.</param>
+        public static async void ToggleBlackMask(Player player)
+        {
+            const int blackMaskClothId = 13;
+            const int maskClothType = (int)ClothType.Accessory;
+            int sexId = player.character.SexId;
+
+            var maskModelData = BaseClothing.FirstOrDefault(i => i.ClothId == blackMaskClothId && i.SexId == sexId);
+
+            ClothRecord currentAccessory = await CharacterInventories.GetEquippedClothRecordByClothTypeAsync(player.character.Id, maskClothType);
+
+            if (currentAccessory != null && currentAccessory.ClothModels != null &&
+                currentAccessory.ClothModels.ClothId == blackMaskClothId &&
+                currentAccessory.ClothModels.SexId == sexId)
+            {
+                currentAccessory.CharacterInventories.IsEquipped = false;
+                currentAccessory.CharacterInventories.Save();
+                player.setup.characterSkinData.Accessory = -1;
+                player.character.Skin = player.setup.characterSkinData.SerializeToJson();
+                player.setup.RpcSkinChange(player.setup.characterSkinData);
+                player.Notify("Cloth", "Vous avez retiré votre masque noir.", Life.NotificationManager.Type.Info);
+            }
+            else
+            {
+                var maskModel = new ClothModels
+                {
+                    ClothId = maskModelData.ClothId,
+                    ClothType = maskModelData.ClothType,
+                    SexId = maskModelData.SexId,
+                    ClothData = JsonConvert.SerializeObject(new ClothData())
+                };
+
+                player.setup.characterSkinData.Accessory = maskModel.ClothId;
+                player.character.Skin = player.setup.characterSkinData.SerializeToJson();
+                player.setup.RpcSkinChange(player.setup.characterSkinData);
+
+                player.Notify("Cloth", "Vous avez équipé un masque noir.", Life.NotificationManager.Type.Info);
+            }
+        }
     }
 }
