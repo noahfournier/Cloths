@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Cloth.Entities;
-using Cloth.Utils;
+using Clothes.Entities;
+using Clothes.Utils;
 using Life.InventorySystem;
 using Life.Network;
 using Life.UI;
@@ -10,7 +10,7 @@ using ModKit.Helper;
 using ModKit.Utils;
 using mk = ModKit.Helper.TextFormattingHelper;
 
-namespace Cloth.Panels.Admin
+namespace Clothes.Panels.Admin
 {
     public class AdminClothItemPanels
     {
@@ -27,10 +27,10 @@ namespace Cloth.Panels.Admin
 
             foreach (var clothType in Enum.GetValues(typeof(ClothType)))
             {
-                List<ClothModels> maleModels = Cloth.CacheManager.ClothModelsCache.Cache.Where(m => m.Value.SexId == 0 && m.Value.ClothType == (int)clothType).Select(m => m.Value).ToList();
+                List<ClothModels> maleModels = Clothes.CacheManager.ClothModelsCache.Cache.Where(m => m.Value.SexId == 0 && m.Value.ClothType == (int)clothType).Select(m => m.Value).ToList();
                 if(maleModels.Count > 0) panel.AddTabLine($"{mk.Color("[H]", mk.Colors.Info)} {clothType}", _ => SelectClothModelPanel(player, maleModels));
 
-                List<ClothModels> femaleModels = Cloth.CacheManager.ClothModelsCache.Cache.Where(m => m.Value.SexId == 1 && m.Value.ClothType == (int)clothType).Select(m => m.Value).ToList();
+                List<ClothModels> femaleModels = Clothes.CacheManager.ClothModelsCache.Cache.Where(m => m.Value.SexId == 1 && m.Value.ClothType == (int)clothType).Select(m => m.Value).ToList();
                 if (femaleModels.Count > 0) panel.AddTabLine($"{mk.Color("[F]", mk.Colors.Purple)} {clothType}", _ => SelectClothModelPanel(player, femaleModels));
             }
 

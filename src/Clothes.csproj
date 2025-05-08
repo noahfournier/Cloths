@@ -7,8 +7,8 @@
     <ProjectGuid>{0E9A1F47-C1A4-4EF3-A44F-E34E7A0850F0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Cloth</RootNamespace>
-    <AssemblyName>Cloth</AssemblyName>
+    <RootNamespace>Clothes</RootNamespace>
+    <AssemblyName>Clothes</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -75,8 +75,8 @@
   <ItemGroup>
     <Compile Include="Cache\CacheManager.cs" />
     <Compile Include="Cache\ClothModelsCache.cs" />
-    <Compile Include="Cloth.cs" />
-    <Compile Include="Config\ClothsConfig.cs" />
+    <Compile Include="Clothes.cs" />
+    <Compile Include="Config\ClothesConfig.cs" />
     <Compile Include="Entities\AreaInventories.cs" />
     <Compile Include="Entities\CharacterInventories.cs" />
     <Compile Include="Entities\ClothModels.cs" />

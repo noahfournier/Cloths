@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using ModKit.Internal;
 
-namespace Cloth.Cache
+namespace Clothes.Cache
 {
     public class CacheManager
     {

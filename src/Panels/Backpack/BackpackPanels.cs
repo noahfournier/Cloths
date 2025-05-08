@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Cloth.Config;
-using Cloth.Entities;
-using Cloth.Utils;
+using Clothes.Config;
+using Clothes.Entities;
+using Clothes.Utils;
 using Life.InventorySystem;
 using Life.Network;
 using Life.UI;
 using ModKit.Helper;
 using mk = ModKit.Helper.TextFormattingHelper;
 
-namespace Cloth.Panels.Backpack
+namespace Clothes.Panels.Backpack
 {
     public class BackpackPanels
     {
@@ -121,7 +121,7 @@ namespace Cloth.Panels.Backpack
                 panel.AddTabLine($"{p.Value.FullName}", async _ =>
                 {
                     List<ClothRecord> clothRecords = await CharacterInventories.GetInventoryForCharacterAsync(p.Value.character.Id);
-                    if (clothRecords.Count < ClothsConfig.Data.MaxBackpackSlots) ConfirmClothingTransferPanel(player, clothRecord, p.Value);
+                    if (clothRecords.Count < ClothesConfig.Data.MaxBackpackSlots) ConfirmClothingTransferPanel(player, clothRecord, p.Value);
                     else
                     {
                         player.Notify("Cloths", $"Le sac à dos de {p.Value.FullName} est plein !", Life.NotificationManager.Type.Warning);

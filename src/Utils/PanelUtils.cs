@@ -1,6 +1,6 @@
 ﻿using mk = ModKit.Helper.TextFormattingHelper;
 
-namespace Cloth.Panels
+namespace Clothes.Panels
 {
     public static class PanelUtils
     {

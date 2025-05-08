@@ -1,6 +1,6 @@
-﻿namespace Cloth.Config
+﻿namespace Clothes.Config
 {
-    public class ClothsConfig : ModKit.Helper.JsonHelper.JsonEntity<ClothsConfig>
+    public class ClothesConfig : ModKit.Helper.JsonHelper.JsonEntity<ClothesConfig>
     {
         /// <summary>
         /// Maximum quantity of clothes in a backpack
