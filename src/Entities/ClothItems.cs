@@ -1,7 +1,7 @@
 ﻿using ModKit.ORM;
 using SQLite;
 
-namespace Cloth.Entities
+namespace Clothes.Entities
 {
     public class ClothItems : ModEntity<ClothItems>
     {

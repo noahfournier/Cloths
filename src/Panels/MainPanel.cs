@@ -1,10 +1,10 @@
 ﻿using Life.Network;
 using Life.UI;
 using ModKit.Helper;
-using Cloth.Panels.Backpack;
-using Cloth.Panels.Admin;
+using Clothes.Panels.Backpack;
+using Clothes.Panels.Admin;
 
-namespace Cloth.Panels
+namespace Clothes.Panels
 {
     public class MainPanel
     {

@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Cloth.Entities;
+using Clothes.Entities;
 using Life.InventorySystem;
 using Life.Network;
 using Newtonsoft.Json;
 
-namespace Cloth.Utils
+namespace Clothes.Utils
 {
     public static class ClothUtils
     {

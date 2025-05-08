@@ -1,28 +1,28 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Cloth.Cache;
-using Cloth.Config;
-using Cloth.Entities;
-using Cloth.Events;
-using Cloth.Panels;
+using Clothes.Cache;
+using Clothes.Config;
+using Clothes.Entities;
+using Clothes.Events;
+using Clothes.Panels;
 using Life;
 using Life.Network;
 using ModKit.Helper;
 using ModKit.Interfaces;
 using ModKit.Utils;
 
-namespace Cloth
+namespace Clothes
 {
-    public class Cloth : ModKit.ModKit
+    public class Clothes : ModKit.ModKit
     {
         private EventManager EventManager { get; }
         public static CacheManager CacheManager { get; set; }
         
         MainPanel MainPanel { get; }
         
-        public Cloth(IGameAPI api) : base(api)
+        public Clothes(IGameAPI api) : base(api)
         {
-            PluginInformations = new PluginInformations(AssemblyHelper.GetName(), "1.0.0", "Noah");
+            PluginInformations = new PluginInformations(AssemblyHelper.GetName(), "1.0.0", "Noah with MODNL");
             EventManager = new EventManager();
             CacheManager = new CacheManager();
             MainPanel = new MainPanel(this);
@@ -50,7 +50,7 @@ namespace Cloth
         {
             var tasks = new List<Task>
             {
-                Task.Run(() => ModKit.Helper.JsonHelper.JsonHelper.RegisterJson<ClothsConfig>()),
+                Task.Run(() => ModKit.Helper.JsonHelper.JsonHelper.RegisterJson<ClothesConfig>()),
             };
 
             await Task.WhenAll(tasks);

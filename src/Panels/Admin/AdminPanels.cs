@@ -2,10 +2,10 @@
 using Life.UI;
 using ModKit.Helper;
 using mk = ModKit.Helper.TextFormattingHelper;
-using Cloth.Entities;
+using Clothes.Entities;
 using ModKit.Utils;
 
-namespace Cloth.Panels.Admin
+namespace Clothes.Panels.Admin
 {
     public class AdminPanels
     {

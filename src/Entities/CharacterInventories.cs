@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Life.InventorySystem;
 using ModKit.Internal;
 using ModKit.ORM;
 using SQLite;
 
-namespace Cloth.Entities
+namespace Clothes.Entities
 {
     public class CharacterInventories : ModEntity<CharacterInventories>
     {

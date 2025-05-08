@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Cloth.Entities;
+using Clothes.Entities;
 
-namespace Cloth.Cache
+namespace Clothes.Cache
 {
     public class ClothModelsCache
     {

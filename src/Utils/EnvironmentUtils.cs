@@ -3,7 +3,7 @@ using Life.CharacterSystem;
 using Life.Network;
 using UnityEngine;
 
-namespace Cloth.Utils
+namespace Clothes.Utils
 {
     public static class EnvironmentUtils
     {

@@ -1,4 +1,4 @@
-﻿namespace Cloth.Events
+﻿namespace Clothes.Events
 {
     public class EventManager
     {

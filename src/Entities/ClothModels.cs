@@ -2,7 +2,7 @@
 using ModKit.ORM;
 using SQLite;
 
-namespace Cloth.Entities
+namespace Clothes.Entities
 {
     public class ClothModels : ModEntity<ClothModels>
     {
@@ -57,7 +57,7 @@ namespace Cloth.Entities
             
             if(await Save())
             {
-                Cloth.CacheManager.ClothModelsCache.AddOrUpdateClothModel(this);
+                Clothes.CacheManager.ClothModelsCache.AddOrUpdateClothModel(this);
                 return true;
             } else return false;
         }

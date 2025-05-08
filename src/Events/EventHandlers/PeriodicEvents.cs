@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using Cloth.Entities;
-using Cloth.Utils;
+using Clothes.Utils;
+using Clothes.Entities;
 using Life;
 using Life.Network;
 using Mirror;
 
-namespace Cloth.Events
+namespace Clothes.Events
 {
     public class PeriodicEvents
     {

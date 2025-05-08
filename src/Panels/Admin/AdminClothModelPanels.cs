@@ -1,6 +1,6 @@
 ﻿using System;
-using Cloth.Entities;
-using Cloth.Utils;
+using Clothes.Entities;
+using Clothes.Utils;
 using Life.InventorySystem;
 using Life.Network;
 using Life.UI;
@@ -9,7 +9,7 @@ using ModKit.Utils;
 using Newtonsoft.Json;
 using mk = ModKit.Helper.TextFormattingHelper;
 
-namespace Cloth.Panels.Admin
+namespace Clothes.Panels.Admin
 {
     public class AdminClothModelPanels
     {
