@@ -59,12 +59,7 @@ namespace Clothes.Panels.Backpack
             {
                 panel.AddTabLine($"{(clothRecord.CharacterInventories.IsEquipped ? "[Équipé] " :"")}{clothRecord.ClothModels.Name}", _ =>
                 {
-                    if(!clothRecord.CharacterInventories.IsEquipped) ClothUtils.EquipClothing(player, clothRecord, equippedClothRecord);
-                    else
-                    {
-                        player.Notify("Cloth", "Vous portez déjà ce vêtement", Life.NotificationManager.Type.Warning);
-                        panel.Refresh();
-                    }
+                    ClothUtils.EquipClothing(player, clothRecord, equippedClothRecord);
                 });
             }
 
