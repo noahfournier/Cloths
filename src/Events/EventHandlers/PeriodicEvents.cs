@@ -26,7 +26,7 @@ namespace Clothes.Events
             List<ClothRecord> outfit = await CharacterInventories.GetInventoryForCharacterAsync(player.character.Id, true);
             foreach (ClothRecord record in outfit)
             {
-                ClothUtils.EquipClothing(player, record);
+                ClothUtils.EquipClothing(player, record, null, true);
             }
         }
 

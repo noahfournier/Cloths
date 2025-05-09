@@ -124,25 +124,36 @@ namespace Clothes.Utils
         /// <param name="clothRecord">The clothing item to equip.</param>
         /// <param name="equippedClothRecord">The currently equipped clothing item, if any.</param>
         /// <returns>True if the clothing item was equipped successfully, otherwise false.</returns>
-        public static bool EquipClothing(Player player, ClothRecord clothRecord, ClothRecord equippedClothRecord = null)
+        public static bool EquipClothing(Player player, ClothRecord clothRecord, ClothRecord equippedClothRecord = null, bool firstConnection = false)
         {
-            if (clothRecord.ClothModels == null)
+            if(!clothRecord.CharacterInventories.IsEquipped || firstConnection)
             {
-                player.Notify("Cloth","Erreur lors de la récupération du modèle de votre vêtement",Life.NotificationManager.Type.Error);
-                return false;
+                if (clothRecord.ClothModels == null)
+                {
+                    player.Notify("Cloth", "Erreur lors de la récupération du modèle de votre vêtement", Life.NotificationManager.Type.Error);
+                    return false;
+                }
+
+                ApplyClothData(player, clothRecord.ClothModels);
+
+                if (equippedClothRecord != null)
+                {
+                    equippedClothRecord.CharacterInventories.IsEquipped = false;
+                    equippedClothRecord.CharacterInventories.Save();
+                }
+                clothRecord.CharacterInventories.IsEquipped = true;
+                clothRecord.CharacterInventories.Save();
+            }
+            else
+            {
+                clothRecord.CharacterInventories.IsEquipped = false;
+                clothRecord.CharacterInventories.Save();
+
+                ApplyClothData(player, clothRecord.ClothModels, false, true);
             }
 
-            ApplyClothData(player, clothRecord.ClothModels);
 
-            if(equippedClothRecord != null)
-            {
-                equippedClothRecord.CharacterInventories.IsEquipped = false;
-                equippedClothRecord.CharacterInventories.Save();
-            }
-            clothRecord.CharacterInventories.IsEquipped = true;
-            clothRecord.CharacterInventories.Save();
-
-            return true;
+                return true;
         }
 
         /// <summary>
@@ -162,9 +173,8 @@ namespace Clothes.Utils
         /// <param name="player">The player to whom the clothing data will be applied.</param>
         /// <param name="model">The clothing model containing the data to be applied.</param>
         /// <param name="isPreview">Indicates whether the changes are a preview. Default is false.</param>
-        private static void ApplyClothData(Player player, ClothModels model, bool isPreview = false)
+        private static void ApplyClothData(Player player, ClothModels model, bool isPreview = false, bool onlyUnequip = false)
         {
-            
             if (isPreview)
             {
                 Task.Run(async () =>
@@ -185,23 +195,23 @@ namespace Clothes.Utils
             switch (model.ClothType)
             {
                 case (int)ClothType.Hat:
-                    player.setup.characterSkinData.Hat = model.ClothId;
+                    player.setup.characterSkinData.Hat = onlyUnequip ? -1 : model.ClothId;
                     break;
                 case (int)ClothType.Accessory:
-                    player.setup.characterSkinData.Accessory = model.ClothId;
+                    player.setup.characterSkinData.Accessory = onlyUnequip ? -1 : model.ClothId;
                     break;
                 case (int)ClothType.Shirt:
-                    player.setup.characterSkinData.TShirt = model.ClothId;
+                    player.setup.characterSkinData.TShirt = onlyUnequip ? -1 : model.ClothId;
                     if (model.ClothData != null) player.setup.characterSkinData.tshirtData = clothData;
                     else player.setup.characterSkinData.tshirtData = new ClothData();
                     break;
                 case (int)ClothType.Pants:
-                    player.setup.characterSkinData.Pants = model.ClothId;
+                    player.setup.characterSkinData.Pants = onlyUnequip ? -1 : model.ClothId;
                     if (model.ClothData != null) player.setup.characterSkinData.pantsData = clothData;
                     else player.setup.characterSkinData.pantsData = new ClothData();
                     break;
                 case (int)ClothType.Shoes:
-                    player.setup.characterSkinData.Shoes = model.ClothId;
+                    player.setup.characterSkinData.Shoes = onlyUnequip ? -1 : model.ClothId;
                     break;
                 default:
                     break;
@@ -210,6 +220,13 @@ namespace Clothes.Utils
             if(!isPreview) player.character.Skin = player.setup.characterSkinData.SerializeToJson();
             player.setup.RpcSkinChange(player.setup.characterSkinData);
         }
+
+        /// <summary>
+        /// Translates the type of clothing into its corresponding French name.
+        /// If the type is not recognized, it returns "Inconnu".
+        /// </summary>
+        /// <param name="type">The type of clothing to translate.</param>
+        /// <returns>A string representing the French name of the clothing type.</returns>
         public static string ClothTypeTranslater(ClothType type)
         {
             switch (type)
