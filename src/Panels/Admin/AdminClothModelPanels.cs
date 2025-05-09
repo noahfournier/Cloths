@@ -58,10 +58,7 @@ namespace Clothes.Panels.Admin
             }
 
             panel.NextButton("Modifier", () => panel.SelectTab());
-            panel.NextButton("Supprimer", async () =>
-            {
-                ConfirmDeletePanel(player, customModels[panel.selectedTab]);
-            });
+            panel.NextButton("Supprimer", () => ConfirmDeletePanel(player, customModels[panel.selectedTab]));
             panel.PreviousButton();
             panel.CloseButton();
 

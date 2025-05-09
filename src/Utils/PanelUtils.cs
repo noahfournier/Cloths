@@ -20,8 +20,6 @@ namespace Clothes.Panels
             return $"{mk.Color($"{mk.Size($"Cloths - {title}", 12)}", mk.Colors.Info)}<br>{subtitle}";
         }
 
-
-
         /// <summary>
         /// Notifies the player that a value is not editable and refreshes the panel.
         /// </summary>

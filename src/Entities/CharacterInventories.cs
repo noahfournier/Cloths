@@ -67,6 +67,7 @@ namespace Clothes.Entities
                         }
                         else
                         {
+                            /// If ClothModel does not exist, then we remove the data related to it.
                             await item.Delete();
                             await clothItem.Delete();
                         }
