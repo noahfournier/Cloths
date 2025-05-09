@@ -49,6 +49,7 @@ namespace Clothes.Utils
 
         /// <summary>
         /// List of the game's basic clothing items.
+        /// This list does not include items that involve nudity, but they are available with the ID -1.
         /// </summary>
         public static List<ClothModelStruct> BaseClothing = new List<ClothModelStruct>
         {
@@ -63,19 +64,16 @@ namespace Clothes.Utils
             new ClothModelStruct(12, (int)ClothType.Shirt, 0, "Blouse de médecin"),
             new ClothModelStruct(13, (int)ClothType.Shirt, 0, "Gilet jaune"),
             new ClothModelStruct(14, (int)ClothType.Shirt, 0, "Haut du SWAT"),
-            new ClothModelStruct(-1, (int)ClothType.Shirt, 0, "Torse nu"),
             new ClothModelStruct(10, (int)ClothType.Pants, 0, "Pantalon de policier"),
             new ClothModelStruct(11, (int)ClothType.Pants, 0, "Pantalon de pompier"),
             new ClothModelStruct(12, (int)ClothType.Pants, 0, "Pantalon de médecin"),
             new ClothModelStruct(13, (int)ClothType.Pants, 0, "Pantalon de chantier"),
             new ClothModelStruct(14, (int)ClothType.Pants, 0, "Pantalon du SWAT"),
-            new ClothModelStruct(-1, (int)ClothType.Pants, 0, "Sous-vêtement"),
             new ClothModelStruct(10, (int)ClothType.Shoes, 0, "Chaussures de policier"),
             new ClothModelStruct(11, (int)ClothType.Shoes, 0, "Chaussures de pompier"),
             new ClothModelStruct(12, (int)ClothType.Shoes, 0, "Chaussures de médecin"),
             new ClothModelStruct(13, (int)ClothType.Shoes, 0, "Chaussures de chantier"),
             new ClothModelStruct(14, (int)ClothType.Shoes, 0, "Chaussures du SWAT"),
-            new ClothModelStruct(-1, (int)ClothType.Shoes, 0, "Pieds nu"),
             new ClothModelStruct(3, (int)ClothType.Hat, 1, "Casquette de policier"),
             new ClothModelStruct(4, (int)ClothType.Hat, 1, "Casque de pompier"),
             new ClothModelStruct(5, (int)ClothType.Hat, 1, "Casque de protection"),
@@ -87,19 +85,16 @@ namespace Clothes.Utils
             new ClothModelStruct(12, (int)ClothType.Shirt, 1, "Blouse de médecin"),
             new ClothModelStruct(13, (int)ClothType.Shirt, 1, "Gilet jaune"),
             new ClothModelStruct(14, (int)ClothType.Shirt, 1, "Haut du SWAT"),
-            new ClothModelStruct(-1, (int)ClothType.Shirt, 1, "Torse nu"),
             new ClothModelStruct(9, (int)ClothType.Pants, 1, "Pantalon de policier"),
             new ClothModelStruct(10, (int)ClothType.Pants, 1, "Pantalon de pompier"),
             new ClothModelStruct(11, (int)ClothType.Pants, 1, "Pantalon de médecin"),
             new ClothModelStruct(12, (int)ClothType.Pants, 1, "Pantalon de chantier"),
             new ClothModelStruct(13, (int)ClothType.Pants, 1, "Pantalon du SWAT"),
-            new ClothModelStruct(-1, (int)ClothType.Pants, 1, "Sous-vêtement"),
             new ClothModelStruct(10, (int)ClothType.Shoes, 1, "Chaussures de policier"),
             new ClothModelStruct(11, (int)ClothType.Shoes, 1, "Chaussures de pompier"),
             new ClothModelStruct(12, (int)ClothType.Shoes, 1, "Chaussures de médecin"),
             new ClothModelStruct(13, (int)ClothType.Shoes, 1, "Chaussures de chantier"),
             new ClothModelStruct(14, (int)ClothType.Shoes, 1, "Chaussures du SWAT"),
-            new ClothModelStruct(-1, (int)ClothType.Shoes, 1, "Pieds nu")
         };
 
         /// <summary>
@@ -123,10 +118,11 @@ namespace Clothes.Utils
         /// <param name="player">The player to equip.</param>
         /// <param name="clothRecord">The clothing item to equip.</param>
         /// <param name="equippedClothRecord">The currently equipped clothing item, if any.</param>
+        /// <param name="isCharacterSpawning">Indicates if the player is spawning. Default is false.</param>
         /// <returns>True if the clothing item was equipped successfully, otherwise false.</returns>
-        public static bool EquipClothing(Player player, ClothRecord clothRecord, ClothRecord equippedClothRecord = null, bool firstConnection = false)
+        public static bool EquipClothing(Player player, ClothRecord clothRecord, ClothRecord equippedClothRecord = null, bool isCharacterSpawning = false)
         {
-            if(!clothRecord.CharacterInventories.IsEquipped || firstConnection)
+            if(!clothRecord.CharacterInventories.IsEquipped || isCharacterSpawning)
             {
                 if (clothRecord.ClothModels == null)
                 {
@@ -152,7 +148,6 @@ namespace Clothes.Utils
                 ApplyClothData(player, clothRecord.ClothModels, false, true);
             }
 
-
                 return true;
         }
 
@@ -173,6 +168,7 @@ namespace Clothes.Utils
         /// <param name="player">The player to whom the clothing data will be applied.</param>
         /// <param name="model">The clothing model containing the data to be applied.</param>
         /// <param name="isPreview">Indicates whether the changes are a preview. Default is false.</param>
+        /// <param name="onlyUnequip">Indicates whether the clothing item should only be unequipped. Default is false.</param>
         private static void ApplyClothData(Player player, ClothModels model, bool isPreview = false, bool onlyUnequip = false)
         {
             if (isPreview)
