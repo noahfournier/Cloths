@@ -22,13 +22,18 @@ namespace Clothes.Panels.Admin
 
         public void AdminMenuPanel(Player player)
         {
-            Panel panel = Context.PanelHelper.Create("Cloths - Menu Admin", UIPanel.PanelType.TabPrice, player, () => AdminMenuPanel(player));
+            Panel panel = Context.PanelHelper.Create("Clothes - Menu Admin", UIPanel.PanelType.TabPrice, player, () => AdminMenuPanel(player));
 
             panel.AddTabLine($"{mk.Color("Créer un modèle", mk.Colors.Verbose)}", _ =>
             {
                 ClothModels model = new ClothModels();
                 model.CreatedAt = DateUtils.GetCurrentTime();
                 _adminClothModelPanels.SelectSexIdPanel(player, model);
+            });
+
+            panel.AddTabLine($"{mk.Color("Liste des modèles", mk.Colors.Verbose)}", _ =>
+            {
+                _adminClothModelPanels.ClothModelMenuPanel(player);
             });
 
             panel.AddTabLine($"{mk.Color("Générer un vêtement", mk.Colors.Verbose)}", _ =>

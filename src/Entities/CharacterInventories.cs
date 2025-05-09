@@ -65,7 +65,11 @@ namespace Clothes.Entities
 
                             allClothRecords.Add(clothRecord);
                         }
-                        else Logger.LogError("GetInventoryForCharacterAsync", $"ClothModel not found for ClothModelId: {clothItem.ClothModelId}");
+                        else
+                        {
+                            await item.Delete();
+                            await clothItem.Delete();
+                        }
                     }
                     else Logger.LogError("GetInventoryForCharacterAsync", $"ClothItem not found for ClothItemId: {item.ClothItemId}");
                 }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Clothes.Entities;
 using Clothes.Utils;
 using Life.InventorySystem;
@@ -20,6 +22,105 @@ namespace Clothes.Panels.Admin
             Context = context;
         }
 
+        public async void ClothModelMenuPanel(Player player)
+        {
+            List<ClothModels> allCustomModels = await ClothModels.Query(c => c.ClothData != null);
+            List<ClothModels> customShirts = allCustomModels.Where(i => i.ClothType == (int)ClothType.Shirt).ToList();
+            List<ClothModels> customPants = allCustomModels.Where(i => i.ClothType == (int)ClothType.Pants).ToList();
+
+            Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Liste des modèles", "Sélectionner le type de vêtement"), UIPanel.PanelType.TabPrice, player, () => ClothModelMenuPanel(player));
+
+            panel.AddTabLine($"[{(customShirts.Count > 0 ? $"Quantité: {customShirts.Count}" : "Vide")}] {ClothType.Shirt}", _ =>
+            {
+                ListPanel(player, customShirts, ClothType.Shirt);
+            });
+
+            
+            panel.AddTabLine($"[{(customPants.Count > 0 ? $"Quantité: {customPants.Count}" : "Vide")}] {ClothType.Pants}", _ =>
+            {
+                ListPanel(player, customPants, ClothType.Pants);
+            });
+
+            panel.PreviousButton();
+            panel.NextButton("Sélectionner", () => panel.SelectTab());
+            panel.CloseButton();
+
+            panel.Display();
+        }
+
+        public void ListPanel(Player player, List<ClothModels> customModels, ClothType clothType)
+        {
+            Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Liste des modèles", $"Vos modèles de {clothType}"), UIPanel.PanelType.TabPrice, player, () => ListPanel(player, customModels, clothType));
+
+            foreach (ClothModels clothModel in customModels)
+            {
+                panel.AddTabLine($"{clothModel.Name}", _ => EditClothModelPanel(player, clothModel));
+            }
+
+            panel.NextButton("Modifier", () => panel.SelectTab());
+            panel.NextButton("Supprimer", async () =>
+            {
+                ConfirmDeletePanel(player, customModels[panel.selectedTab]);
+            });
+            panel.PreviousButton();
+            panel.CloseButton();
+
+            panel.Display();
+        }
+
+        public void ConfirmDeletePanel(Player player, ClothModels model)
+        {
+            Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Supprimer un modèle", $"Demande de confirmation"), UIPanel.PanelType.TabPrice, player, () => ConfirmDeletePanel(player, model));
+
+            panel.TextLines.Add("Voulez-vous vraiment supprimer définitivement");
+            panel.TextLines.Add($"[{Enum.GetName(typeof(ClothType), model.ClothType)}] {model.Name}");
+            
+            panel.PreviousButtonWithAction("Confirmer la suppression", async () =>
+            {
+                if (await model.Delete())
+                {
+                    player.Notify("Clothes", "Modèle supprimé avec succès", Life.NotificationManager.Type.Success);
+                    return true;
+                }
+                else
+                {
+                    player.Notify("Clothes", "Erreur lors de la supression du modèle", Life.NotificationManager.Type.Error);
+                    return false;
+                }
+                
+            });
+            panel.PreviousButton();
+            panel.CloseButton();
+
+            panel.Display();
+        }
+
+        public void EditClothModelPanel(Player player, ClothModels model)
+        {
+            Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Modifier un modèle", $"Choisir la valeur à modifier"), UIPanel.PanelType.TabPrice, player, () => EditClothModelPanel(player, model));
+
+            panel.AddTabLine($"{mk.Color("Vêtement de base :", mk.Colors.Info)} {ClothUtils.GetClothName(model)}", _ => PanelUtils.NotEditableValue(player, panel));
+            panel.AddTabLine($"{mk.Color("Type :", mk.Colors.Info)} {Enum.GetName(typeof(ClothType), model.ClothType)}", _ => PanelUtils.NotEditableValue(player, panel));
+            panel.AddTabLine($"{mk.Color("Sexe :", mk.Colors.Info)} {(model.SexId == 0 ? "Masculin" : "Féminin")}", _ => PanelUtils.NotEditableValue(player, panel));
+
+            panel.AddTabLine($"{mk.Color("Nom :", mk.Colors.Warning)} {model.Name}", _ => SetNamePanel(player, model, false));        
+            panel.AddTabLine($"{mk.Color("Prix :", mk.Colors.Warning)} {model.Price}€", _ => SetPricePanel(player, model, true));
+            panel.AddTabLine($"{mk.Color("Url du flocage :", mk.Colors.Warning)} {JsonConvert.DeserializeObject<ClothData>(model.ClothData).url}", _ =>
+            {
+                SetClothDataPanel(player, model, false);
+            });
+
+            panel.AddTabLine($"{mk.Color("Date de création :", mk.Colors.Info)} {DateUtils.FormatUnixTimestamp(model.CreatedAt)}", _ => PanelUtils.NotEditableValue(player, panel));
+            panel.AddTabLine($"{mk.Color("Dernière mise à jour :", mk.Colors.Info)} {DateUtils.FormatUnixTimestamp(model.CreatedAt)}", _ => PanelUtils.NotEditableValue(player, panel));
+
+            panel.NextButton("Sélectionner", () => panel.SelectTab());
+            panel.PreviousButton();
+            panel.CloseButton();
+
+            panel.Display();
+        }
+
+        #region CREATE OR UPDATE
         public void SelectSexIdPanel(Player player, ClothModels model)
         {
             Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Créer un modèle", "Choisir le sexe"), UIPanel.PanelType.TabPrice, player, () => SelectSexIdPanel(player, model));
@@ -79,88 +180,140 @@ namespace Clothes.Panels.Admin
             panel.Display();
         }
 
-        public void SetClothDataPanel(Player player, ClothModels model)
+        public void SetClothDataPanel(Player player, ClothModels model, bool isCreating = true)
         {
-            Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Créer un modèle", "Choisir le flocage"), UIPanel.PanelType.Input, player, () => SetClothDataPanel(player, model));
+            Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel($"{(isCreating ? "Créer un modèle" : "Modifier un modèle")}", "Définir le flocage"), UIPanel.PanelType.Input, player, () => SetClothDataPanel(player, model, isCreating));
 
             panel.SetInputPlaceholder("Renseigner l'url du flocage à appliquer");
 
             panel.PreviousButton();
-            panel.NextButton("Sélectionner", async () =>
+            if(isCreating)
             {
-                if (await InputUtils.IsValidImageUrlAsync(panel.inputText))
+                panel.NextButton("Confirmer", async () =>
                 {
-                    ClothData clothData = new ClothData();
-                    clothData.clothName = $"c{model.SexId}{model.ClothType}{model.ClothId}-{model.CreatedAt}";
-                    clothData.url = panel.inputText;
-                    model.ClothData = JsonConvert.SerializeObject(clothData, Formatting.Indented);
-                    SetPricePanel(player, model);
-                }
-                else
+                    if (await InputUtils.IsValidImageUrlAsync(panel.inputText))
+                    {
+                        ClothData clothData = new ClothData();
+                        clothData.clothName = $"c{model.SexId}{model.ClothType}{model.ClothId}-{model.CreatedAt}";
+                        clothData.url = panel.inputText;
+                        model.ClothData = JsonConvert.SerializeObject(clothData, Formatting.Indented);
+                        SetPricePanel(player, model);
+                    }
+                    else
+                    {
+                        player.Notify("Clothes", "URL invalide", Life.NotificationManager.Type.Warning);
+                        panel.Refresh();
+                    }
+                });
+            } 
+            else
+            {
+                panel.PreviousButtonWithAction("Confirmer", async () =>
                 {
-                    player.Notify("Cloth", "URL invalide", Life.NotificationManager.Type.Warning);
-                    panel.Refresh();
-                }
-            });
-            panel.CloseButton();
+                    if (await InputUtils.IsValidImageUrlAsync(panel.inputText))
+                    {
+                        ClothData clothData = new ClothData();
+                        clothData.clothName = $"c{model.SexId}{model.ClothType}{model.ClothId}-{model.CreatedAt}";
+                        clothData.url = panel.inputText;
+                        model.ClothData = JsonConvert.SerializeObject(clothData, Formatting.Indented);
+                        return await PanelUtils.QueryUpdateResponse(player, model.Save());
+                    }
+                    else player.Notify("Clothes", "URL invalide", Life.NotificationManager.Type.Warning);
+                    return false;
+                });
+            }
+
+                panel.CloseButton();
 
             panel.Display();
         }
 
-        public void SetPricePanel(Player player, ClothModels model)
+        public void SetPricePanel(Player player, ClothModels model, bool isCreating = true)
         {
-            Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Créer un modèle", "Définir le prix"), UIPanel.PanelType.Input, player, () => SetPricePanel(player, model));
+            Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel($"{(isCreating ? "Créer un modèle" : "Modifier un modèle")}", "Définir le prix"), UIPanel.PanelType.Input, player, () => SetPricePanel(player, model, isCreating));
 
             panel.SetInputPlaceholder("Renseigner le prix en séparant les centimes par une virgule.");
 
             panel.PreviousButton();
-            panel.NextButton("Sélectionner", () =>
+            if (isCreating)
             {
-                if (double.TryParse(panel.inputText, out double price) && price >= 0)
+                panel.NextButton("Confirmer", () =>
                 {
-                    model.Price = Math.Round(price, 2);
-                    SetNamePanel(player, model);
-                }
-                else
+                    if (double.TryParse(panel.inputText, out double price) && price >= 0)
+                    {
+                        model.Price = Math.Round(price, 2);
+                        SetNamePanel(player, model);
+                    }
+                    else
+                    {
+                        player.Notify("Clothes", "Prix invalide", Life.NotificationManager.Type.Warning);
+                        panel.Refresh();
+                    }
+                });
+            }
+            else
+            {
+                panel.PreviousButtonWithAction("Confirmer", async () =>
                 {
-                    player.Notify("Cloths", "Prix invalide", Life.NotificationManager.Type.Warning);
-                    panel.Refresh();
-                }
-            });
+                    if (double.TryParse(panel.inputText, out double price) && price >= 0)
+                    {
+                        model.Price = Math.Round(price, 2);
+                        return await PanelUtils.QueryUpdateResponse(player, model.Save());
+                    }
+                    else player.Notify("Clothes", "Prix invalide", Life.NotificationManager.Type.Warning);
+                    return false;
+                });
+            }
             panel.CloseButton();
 
             panel.Display();
         }
 
-        public void SetNamePanel(Player player, ClothModels model)
+        public void SetNamePanel(Player player, ClothModels model, bool isCreating = true)
         {
-            Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Créer un modèle", "Définir le nom"), UIPanel.PanelType.Input, player, () => SetNamePanel(player, model));
+            Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel($"{(isCreating ? "Créer un modèle" : "Modifier un modèle")}", "Définir le nom"), UIPanel.PanelType.Input, player, () => SetNamePanel(player, model, isCreating));
 
             panel.SetInputPlaceholder("Renseigner le nom de ce modèle (3 caractères minimum)");
 
             panel.PreviousButton();
-            panel.NextButton("Sauvegarder", async () =>
+            if(isCreating)
             {
-                if (panel.inputText != null && panel.inputText.Length >= 3)
+                panel.NextButton("Confirmer et Sauvegarder", async () =>
                 {
-                    model.Name = panel.inputText;
-                    if (await model.Create())
+                    if (panel.inputText != null && panel.inputText.Length >= 3)
                     {
-                        player.Notify("Cloths", "Succès lors de l'enregistrement de votre modèle", Life.NotificationManager.Type.Success);
-                        NotifyClothModelCreatedPanel(player, model);
+                        model.Name = panel.inputText;
+                        if (await model.Create())
+                        {
+                            player.Notify("Cloths", "Succès lors de l'enregistrement de votre modèle", Life.NotificationManager.Type.Success);
+                            NotifyClothModelCreatedPanel(player, model);
+                        }
+                        else
+                        {
+                            player.Notify("Cloths", "Échec lors de l'enregistrement de votre modèle", Life.NotificationManager.Type.Error);
+                            panel.Refresh();
+                        }
                     }
                     else
                     {
-                        player.Notify("Cloths", "Échec lors de l'enregistrement de votre modèle", Life.NotificationManager.Type.Error);
+                        player.Notify("Cloths", "Nom invalide", Life.NotificationManager.Type.Warning);
                         panel.Refresh();
                     }
-                }
-                else
+                });
+            }
+            else
+            {
+                panel.PreviousButtonWithAction("Confirmer", async () =>
                 {
-                    player.Notify("Cloths", "Nom invalide", Life.NotificationManager.Type.Warning);
-                    panel.Refresh();
-                }
-            });
+                    if (panel.inputText != null && panel.inputText.Length >= 3)
+                    {
+                        model.Name = panel.inputText;
+                        return await PanelUtils.QueryUpdateResponse(player, model.Save());
+                    }
+                    else player.Notify("Cloths", "Nom invalide", Life.NotificationManager.Type.Warning);
+                    return false;
+                });
+            }
             panel.CloseButton();
 
             panel.Display();
@@ -180,7 +333,7 @@ namespace Clothes.Panels.Admin
 
             panel.AddButton("Prévisualiser", _ =>
             {
-                
+
                 ClothUtils.PreviewClothing(player, model);
                 panel.Refresh();
             });
@@ -190,5 +343,6 @@ namespace Clothes.Panels.Admin
 
             panel.Display();
         }
+        #endregion
     }
 }
