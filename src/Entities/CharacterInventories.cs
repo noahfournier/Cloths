@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Clothes.Entities.CompositeEntities;
+using ModKit;
 using ModKit.Internal;
 using ModKit.ORM;
 using SQLite;
@@ -28,6 +30,13 @@ namespace Clothes.Entities
 
         public CharacterInventories()
         {
+        }
+
+        public CharacterInventories(int characterId, int clothItemId)
+        {
+            CharacterId = characterId;
+            ClothItemId = clothItemId;
+            IsEquipped = false;
         }
 
         /// <summary>
@@ -125,14 +134,5 @@ namespace Clothes.Entities
 
             return clothRecord;
         }
-
-
-    }
-
-    public class ClothRecord
-    {
-        public CharacterInventories CharacterInventories { get; set; }
-        public ClothItems ClothItems { get; set; }
-        public ClothModels ClothModels { get; set; }
     }
 }

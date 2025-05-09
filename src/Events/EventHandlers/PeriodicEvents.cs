@@ -4,6 +4,7 @@ using Clothes.Entities;
 using Life;
 using Life.Network;
 using Mirror;
+using Clothes.Entities.CompositeEntities;
 
 namespace Clothes.Events
 {
