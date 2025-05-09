@@ -3,6 +3,10 @@ using Life.UI;
 using ModKit.Helper;
 using Clothes.Panels.Backpack;
 using Clothes.Panels.Admin;
+using System.Collections.Generic;
+using Life.AreaSystem;
+using System;
+using Clothes.Panels.Wardrobe;
 
 namespace Clothes.Panels
 {
@@ -10,12 +14,14 @@ namespace Clothes.Panels
     {
         AdminPanels _adminPanels { get; }
         BackpackPanels _backpackPanels { get; }
+        WardrobePanels _wardrobePanels { get; }
         public ModKit.ModKit Context { get; set; }
 
         public MainPanel(ModKit.ModKit context)
         {
             _adminPanels = new AdminPanels(context);
             _backpackPanels = new BackpackPanels(context);
+            _wardrobePanels = new WardrobePanels(context);
             Context = context;
         }
 
@@ -25,7 +31,19 @@ namespace Clothes.Panels
 
             panel.AddTabLine("Menu Admin", _ => _adminPanels.AdminMenuPanel(player));
             panel.AddTabLine("Sac à dos", _ => _backpackPanels.BackpackMenuPanel(player));
-            panel.AddTabLine("Garde-robe", _ => { });
+            panel.AddTabLine("Garde-robe", _ =>
+            {
+                AreaObject wardrobe = Utils.EnvironmentUtils.DetectNearbyWardrobe(player);
+                if (wardrobe.areaInstance.lifeArea.permissions.HasPermission(player.character.Id))
+                {
+                    _wardrobePanels.WardrobeMenuPanel(player, wardrobe.areaInstance.lifeArea);
+                }
+                else
+                {
+                    player.Notify("Clothes", "Vous n'avez pas la permission d'accéder à cette garde-robe", Life.NotificationManager.Type.Info);
+                    panel.Refresh();
+                }
+            });
 
             panel.NextButton("Sélectionner", () => panel.SelectTab());
             panel.CloseButton();

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Clothes.Config;
 using Clothes.Entities;
+using Clothes.Entities.CompositeEntities;
 using Clothes.Utils;
 using Life.InventorySystem;
 using Life.Network;

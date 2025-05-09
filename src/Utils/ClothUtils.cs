@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Clothes.Entities;
+using Clothes.Entities.CompositeEntities;
 using Life.InventorySystem;
 using Life.Network;
 using Newtonsoft.Json;
