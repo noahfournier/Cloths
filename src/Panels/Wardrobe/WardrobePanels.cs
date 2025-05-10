@@ -6,7 +6,6 @@ using Clothes.Entities;
 using Clothes.Entities.CompositeEntities;
 using Clothes.Utils;
 using Life.AreaSystem;
-using Life.DB;
 using Life.InventorySystem;
 using Life.Network;
 using Life.UI;

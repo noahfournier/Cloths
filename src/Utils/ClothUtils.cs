@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Clothes.Config;
 using Clothes.Entities;
 using Clothes.Entities.CompositeEntities;
 using Life.InventorySystem;
@@ -177,12 +178,9 @@ namespace Clothes.Utils
                 Task.Run(async () =>
                 {
                     ClothRecord record = await CharacterInventories.GetEquippedClothRecordByClothTypeAsync(player.character.Id, model.ClothType);
-                    if(record != null)
-                    {
-                        await Task.Delay(6000);
-                        player.Notify("Cloths", "Prévisualisation en cours", Life.NotificationManager.Type.Info, 6);
-                        ApplyClothData(player, record.ClothModels);
-                    }
+                    player.Notify("Cloths", "Prévisualisation en cours", Life.NotificationManager.Type.Info, ClothesConfig.Data.PreviewDurationInSeconds);
+                    await Task.Delay(ClothesConfig.Data.GetPreviewDurationTimeSpan());
+                    ApplyClothData(player, record != null ? record.ClothModels : model, false, true);
                 });
             }
 
