@@ -25,7 +25,7 @@ namespace Clothes.Panels.Wardrobe
 
         public async void WardrobeMenuPanel(Player player, LifeArea area)
         {
-            string wardrobeSlots = ClothesConfig.Data.MaxWardrobeSlots > 0 ? ClothesConfig.Data.MaxWardrobeSlots.ToString() : "∞";
+            string wardrobeSlots = ClothesConfig.Data.MaxWardrobeSlots > 0 ? ClothesConfig.Data.MaxWardrobeSlots.ToString() : "infini";
             List<ClothRecord> allClothRecords = await AreaInventories.GetInventoryForAreaAsync((int)area.areaId);
 
             Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Garde-robe", $"[emplacements: {allClothRecords.Count} / {wardrobeSlots}]"), UIPanel.PanelType.TabPrice, player, () => WardrobeMenuPanel(player, area));
@@ -36,7 +36,7 @@ namespace Clothes.Panels.Wardrobe
 
                 panel.AddTabLine($"[{(clothRecords.Count > 0 ? $"Quantité: {clothRecords.Count}" : "Vide")}] {clothType}", _ =>
                 {
-                    if (clothRecords.Count > 0) WardrobeClothTypePanel(player, clothType, clothRecords);
+                    if (clothRecords.Count > 0) WardrobeToBackpack(player, clothType, clothRecords);
                     else
                     {
                         player.Notify("Cloths", $"Vous n'avez aucun {clothType} dans votre garde-robe", Life.NotificationManager.Type.Info);
@@ -53,12 +53,12 @@ namespace Clothes.Panels.Wardrobe
             panel.Display();
         }
 
-        public async void WardrobeClothTypePanel(Player player, ClothType clothType, List<ClothRecord> clothRecords)
+        public async void WardrobeToBackpack(Player player, ClothType clothType, List<ClothRecord> clothRecords)
         {
             var query = await CharacterInventories.Query(i => i.CharacterId == player.character.Id);
             var backpackItemsCount = query.Count();
 
-            Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Garde-robe", $"Vos {clothType}"), UIPanel.PanelType.TabPrice, player, () => WardrobeClothTypePanel(player, clothType, clothRecords));
+            Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Garde-robe", $"Vos {clothType}"), UIPanel.PanelType.TabPrice, player, () => WardrobeToBackpack(player, clothType, clothRecords));
 
             foreach (ClothRecord clothRecord in clothRecords)
             {
