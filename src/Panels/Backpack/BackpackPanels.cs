@@ -27,7 +27,7 @@ namespace Clothes.Panels.Backpack
         {
             List<ClothRecord> allClothRecords = await CharacterInventories.GetInventoryForCharacterAsync(player.character.Id);
 
-            Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Sac à dos", $"[emplacements: {allClothRecords.Count} / 10]"), UIPanel.PanelType.TabPrice, player, () => BackpackMenuPanel(player));
+            Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Sac à dos", $"[emplacements: {allClothRecords.Count} / {ClothesConfig.Data.MaxBackpackSlots}]"), UIPanel.PanelType.TabPrice, player, () => BackpackMenuPanel(player));
 
             foreach (ClothType clothType in Enum.GetValues(typeof(ClothType)))
             {
@@ -116,8 +116,10 @@ namespace Clothes.Panels.Backpack
             {
                 panel.AddTabLine($"{p.Value.FullName}", async _ =>
                 {
-                    List<ClothRecord> clothRecords = await CharacterInventories.GetInventoryForCharacterAsync(p.Value.character.Id);
-                    if (clothRecords.Count < ClothesConfig.Data.MaxBackpackSlots) ConfirmClothingTransferPanel(player, clothRecord, p.Value);
+                    var query = await CharacterInventories.Query(i => i.CharacterId == player.character.Id);
+                    var backpackItemsCount = query.Count();
+
+                    if (backpackItemsCount < ClothesConfig.Data.MaxBackpackSlots) ConfirmClothingTransferPanel(player, clothRecord, p.Value);
                     else
                     {
                         player.Notify("Cloths", $"Le sac à dos de {p.Value.FullName} est plein !", Life.NotificationManager.Type.Warning);
