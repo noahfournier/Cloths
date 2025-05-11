@@ -86,10 +86,12 @@
     <Compile Include="Events\EventHandlers\PeriodicEvents.cs" />
     <Compile Include="Panels\Admin\AdminClothItemPanels.cs" />
     <Compile Include="Panels\Admin\AdminClothModelPanels.cs" />
+    <Compile Include="Panels\Admin\AdminClothShopPanels.cs" />
     <Compile Include="Panels\Admin\AdminPanels.cs" />
     <Compile Include="Panels\Backpack\BackpackPanels.cs" />
     <Compile Include="Panels\MainPanel.cs" />
     <Compile Include="Panels\Wardrobe\WardrobePanels.cs" />
+    <Compile Include="Points\ClothShopPoint.cs" />
     <Compile Include="Utils\EnvironmentUtils.cs" />
     <Compile Include="Utils\PanelUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -102,6 +104,7 @@
     <None Include="Entities\README.md" />
     <None Include="Events\README.md" />
     <None Include="Panels\README.md" />
+    <None Include="Points\README.md" />
     <None Include="References\README.md" />
     <None Include="Utils\README.md" />
   </ItemGroup>

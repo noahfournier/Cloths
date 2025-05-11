@@ -11,12 +11,14 @@ namespace Clothes.Panels.Admin
     {
         AdminClothModelPanels _adminClothModelPanels { get; }
         AdminClothItemPanels _adminClothItemPanels { get; }
+        AdminClothShopPanels _adminClothShopPanels { get; }
         public ModKit.ModKit Context { get; set; }
 
         public AdminPanels(ModKit.ModKit context)
         {
             _adminClothModelPanels = new AdminClothModelPanels(context);
             _adminClothItemPanels = new AdminClothItemPanels(context);
+            _adminClothShopPanels = new AdminClothShopPanels(context);
             Context = context;
         }
 
@@ -39,6 +41,11 @@ namespace Clothes.Panels.Admin
             panel.AddTabLine($"{mk.Color("Générer un vêtement", mk.Colors.Verbose)}", _ =>
             {
                 _adminClothItemPanels.SelectClothTypePanel(player);
+            });
+
+            panel.AddTabLine($"{mk.Color("Points de ventes", mk.Colors.Verbose)}", _ =>
+            {
+                _adminClothShopPanels.ClothShopMenuPanel(player);
             });
 
             panel.PreviousButton();

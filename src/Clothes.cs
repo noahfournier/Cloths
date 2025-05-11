@@ -5,6 +5,7 @@ using Clothes.Config;
 using Clothes.Entities;
 using Clothes.Events;
 using Clothes.Panels;
+using Clothes.Points;
 using Life;
 using Life.Network;
 using ModKit.Helper;
@@ -37,6 +38,9 @@ namespace Clothes
             await InitClothModels();
             await PopulateDb();       
             await CacheManager.InitializeCacheAsync();
+
+            Orm.RegisterTable<ClothShopPoint>();
+            MCheckpointHelper.RegisterType(typeof(ClothShopPoint));
 
             GenerateCommands();
 

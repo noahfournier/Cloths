@@ -1,8 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Life.Network;
-using Life.UI;
 using ModKit.Helper;
-using static Life.InventorySystem.Item;
 using mk = ModKit.Helper.TextFormattingHelper;
 
 namespace Clothes.Panels
@@ -17,7 +15,7 @@ namespace Clothes.Panels
         /// <returns>A formatted string representing the title panel.</returns>
         public static string SetTitlePanel(string title, string subtitle)
         {
-            return $"{mk.Color($"{mk.Size($"Cloths - {title}", 12)}", mk.Colors.Info)}<br>{subtitle}";
+            return $"{mk.Color($"{mk.Size($"Clothes - {title}", 12)}", mk.Colors.Info)}<br>{subtitle}";
         }
 
         /// <summary>
@@ -47,6 +45,26 @@ namespace Clothes.Panels
             else
             {
                 player.Notify("Clothes", "Erreur lors de la sauvegarde de votre modification", Life.NotificationManager.Type.Error);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Handles the response of a creation query and notifies the player of the result.
+        /// </summary>
+        /// <param name="player">The player to notify.</param>
+        /// <param name="task">The task representing the creation operation.</param>
+        /// <returns>A boolean indicating whether the creation was successful.</returns>
+        public async static Task<bool> QueryCreateResponse(Player player, Task<bool> task)
+        {
+            if (await task)
+            {
+                player.Notify("Clothes", "Création enregistrée avec succès", Life.NotificationManager.Type.Success);
+                return true;
+            }
+            else
+            {
+                player.Notify("Clothes", "Erreur lors de la sauvegarde de votre création", Life.NotificationManager.Type.Error);
                 return false;
             }
         }

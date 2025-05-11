@@ -3,9 +3,7 @@ using Life.UI;
 using ModKit.Helper;
 using Clothes.Panels.Backpack;
 using Clothes.Panels.Admin;
-using System.Collections.Generic;
 using Life.AreaSystem;
-using System;
 using Clothes.Panels.Wardrobe;
 
 namespace Clothes.Panels
