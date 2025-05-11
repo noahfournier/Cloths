@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Clothes.Config;
 using Clothes.Entities;
 using Clothes.Entities.CompositeEntities;
 using Life.InventorySystem;
 using Life.Network;
+using ModKit.Helper;
+using ModKit.Utils;
 using Newtonsoft.Json;
 
 namespace Clothes.Utils
@@ -241,6 +244,69 @@ namespace Clothes.Utils
                 default:
                     return "Inconnu";
             }
+        }
+
+        /// <summary>
+        /// Checks if the player has available slots in their backpack.
+        /// If the backpack is full, it notifies the player.
+        /// </summary>
+        /// <param name="player">The player to check.</param>
+        /// <returns>A boolean indicating whether the player has available slots in their backpack.</returns>
+        public static async Task<bool> HasAvailableSlotsInBackpack(Player player)
+        {
+            var query = await CharacterInventories.Query(i => i.CharacterId == player.character.Id);
+            var backpackItemsCount = query.Count();
+            var result = backpackItemsCount < ClothesConfig.Data.MaxBackpackSlots;
+            if(!result) player.Notify("Clothes", "Votre sac à dos est plein !", Life.NotificationManager.Type.Info);
+            return result;
+        }
+
+
+        /// <summary>
+        /// Checks if the player can afford to buy an item.
+        /// If the player does not have enough money, it notifies the player.
+        /// </summary>
+        /// <param name="player">The player to check.</param>
+        /// <param name="amount">The amount of money required to buy the item.</param>
+        /// <returns>A boolean indicating whether the player can afford the item.</returns>
+        public static bool CanBuyItem(Player player, double amount)
+        {
+            if (player.Money >= amount) return true;
+            else player.Notify("Information", "Vous n'avez pas suffisament d'argent pour cette achat", Life.NotificationManager.Type.Info);
+            return false;
+        }
+
+
+        /// <summary>
+        /// Delivers a cloth item to the player's inventory.
+        /// If the item is successfully saved and added to the inventory, it notifies the player.
+        /// </summary>
+        /// <param name="player">The player to receive the cloth item.</param>
+        /// <param name="model">The cloth model to deliver.</param>
+        /// <returns>A boolean indicating whether the cloth item was successfully delivered.</returns>
+        public static async Task<bool> DeliverClothItem(Player player, ClothModels model)
+        {
+            ClothItems clothItem = new ClothItems();
+            clothItem.ClothModelId = model.Id;
+            clothItem.IsDirty = false;
+            clothItem.CreatedAt = DateUtils.GetCurrentTime();
+            if (await clothItem.Save())
+            {
+                CharacterInventories characterInventories = new CharacterInventories();
+                characterInventories.CharacterId = player.character.Id;
+                characterInventories.ClothItemId = clothItem.Id;
+                characterInventories.IsEquipped = false;
+
+                if (await characterInventories.Save())
+                {
+                    player.Notify("Clothes", $"Vous venez de reçevoir \"{model.Name}\"", Life.NotificationManager.Type.Success);
+                    return true;
+                }
+                else player.Notify("Clothes", "Erreur lors de l'ajout du vêtement au sac à dos", Life.NotificationManager.Type.Error);
+            }
+            else player.Notify("Clothes", "Erreur lors de la génération du vêtement", Life.NotificationManager.Type.Error);
+
+            return false;
         }
     }
 }

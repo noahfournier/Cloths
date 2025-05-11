@@ -6,7 +6,6 @@ using Clothes.Entities;
 using Clothes.Entities.CompositeEntities;
 using Clothes.Utils;
 using Life.AreaSystem;
-using Life.DB;
 using Life.InventorySystem;
 using Life.Network;
 using Life.UI;
@@ -53,18 +52,15 @@ namespace Clothes.Panels.Wardrobe
             panel.Display();
         }
 
-        public async void WardrobeToBackpack(Player player, ClothType clothType, List<ClothRecord> clothRecords)
+        public void WardrobeToBackpack(Player player, ClothType clothType, List<ClothRecord> clothRecords)
         {
-            var query = await CharacterInventories.Query(i => i.CharacterId == player.character.Id);
-            var backpackItemsCount = query.Count();
-
             Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Garde-robe", $"Vos {clothType}"), UIPanel.PanelType.TabPrice, player, () => WardrobeToBackpack(player, clothType, clothRecords));
 
             foreach (ClothRecord clothRecord in clothRecords)
             {
-                panel.AddTabLine($"{clothRecord.ClothModels.Name}", async _ =>
+                panel.AddTabLine($"{PanelUtils.GetClothModelTabLine(clothRecord.ClothModels)}", async _ =>
                 {
-                    if (backpackItemsCount < ClothesConfig.Data.MaxBackpackSlots)
+                    if (await ClothUtils.HasAvailableSlotsInBackpack(player))
                     {
                         if (await clothRecord.AreaInventories.Delete())
                         {
@@ -78,8 +74,8 @@ namespace Clothes.Panels.Wardrobe
                         }
                         else player.Notify("Clothes", "Erreur lors du retrait du vêtement de votre garde-robe", Life.NotificationManager.Type.Error);
                     }
-                    else player.Notify("Clothes", "Votre sac à dos est plein !", Life.NotificationManager.Type.Info);
-                        panel.Refresh();
+
+                    panel.Refresh();
                 });
             }
 
@@ -98,7 +94,7 @@ namespace Clothes.Panels.Wardrobe
 
             foreach (ClothRecord clothRecord in clothRecords)
             {
-                panel.AddTabLine($"[{Enum.GetName(typeof(ClothType), clothRecord.ClothModels.ClothType)}] {clothRecord.ClothModels.Name}", async _ =>
+                panel.AddTabLine($"{ClothUtils.ClothTypeTranslater((ClothType)clothRecord.ClothModels.ClothType)} - {PanelUtils.GetClothModelTabLine(clothRecord.ClothModels)}", async _ =>
                 {
                     if(clothRecord.CharacterInventories.IsEquipped) ClothUtils.EquipClothing(player, clothRecord);
 
@@ -111,8 +107,6 @@ namespace Clothes.Panels.Wardrobe
                             player.Notify("Clothes", "Vêtement déposé avec succès dans votre garde-robe", Life.NotificationManager.Type.Success);
                         } else player.Notify("Clothes", "Erreur lors de l'ajout du vêtement à votre garde-robe", Life.NotificationManager.Type.Error);
                     } else player.Notify("Clothes","Erreur lors du retrait du vêtement de votre sac à dos", Life.NotificationManager.Type.Error);
-                    
-                    
 
                     panel.Refresh();
                 });

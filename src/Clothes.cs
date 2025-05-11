@@ -5,6 +5,7 @@ using Clothes.Config;
 using Clothes.Entities;
 using Clothes.Events;
 using Clothes.Panels;
+using Clothes.Points;
 using Life;
 using Life.Network;
 using ModKit.Helper;
@@ -66,8 +67,11 @@ namespace Clothes
                 Task.Run(() => Orm.RegisterTable<ClothModels>()),
                 Task.Run(() => Orm.RegisterTable<ClothItems>()),
                 Task.Run(() => Orm.RegisterTable<CharacterInventories>()),
-                Task.Run(() => Orm.RegisterTable<AreaInventories>())
+                Task.Run(() => Orm.RegisterTable<AreaInventories>()),
+                Task.Run(() => Orm.RegisterTable<ClothShopPoint>())
             };
+            
+            MCheckpointHelper.RegisterType(typeof(ClothShopPoint));
 
             await Task.WhenAll(tasks);
         }
