@@ -17,7 +17,6 @@ namespace Clothes.Panels.Admin
 
         public void ClothShopMenuPanel(Player player)
         {
-
             Panel panel = Context.PanelHelper.Create("Clothes - Points de ventes", UIPanel.PanelType.TabPrice, player, () => ClothShopMenuPanel(player));
 
             panel.AddTabLine("Créer un point de vente", _ =>
@@ -37,7 +36,6 @@ namespace Clothes.Panels.Admin
 
         public void SetNamePanel(Player player, ClothShopPoint clothShop)
         {
-
             Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Créer un point de vente","Définir le nom de la boutique"), UIPanel.PanelType.Input, player, () => SetNamePanel(player, clothShop));
 
             panel.inputPlaceholder = "Comment souhaitez-vous nommer cette boutique de vêtements";
@@ -62,7 +60,6 @@ namespace Clothes.Panels.Admin
 
         public void ConfirmCreatePanel(Player player, ClothShopPoint clothShop)
         {
-
             Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Créer un point de vente", "Confirmer la création du point de vente"), UIPanel.PanelType.Text, player, () => SetNamePanel(player, clothShop));
 
             panel.TextLines.Add("Votre point est presque prêt !");

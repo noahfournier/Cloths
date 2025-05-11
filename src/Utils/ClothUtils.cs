@@ -246,6 +246,12 @@ namespace Clothes.Utils
             }
         }
 
+        /// <summary>
+        /// Checks if the player has available slots in their backpack.
+        /// If the backpack is full, it notifies the player.
+        /// </summary>
+        /// <param name="player">The player to check.</param>
+        /// <returns>A boolean indicating whether the player has available slots in their backpack.</returns>
         public static async Task<bool> HasAvailableSlotsInBackpack(Player player)
         {
             var query = await CharacterInventories.Query(i => i.CharacterId == player.character.Id);
@@ -255,6 +261,14 @@ namespace Clothes.Utils
             return result;
         }
 
+
+        /// <summary>
+        /// Checks if the player can afford to buy an item.
+        /// If the player does not have enough money, it notifies the player.
+        /// </summary>
+        /// <param name="player">The player to check.</param>
+        /// <param name="amount">The amount of money required to buy the item.</param>
+        /// <returns>A boolean indicating whether the player can afford the item.</returns>
         public static bool CanBuyItem(Player player, double amount)
         {
             if (player.Money >= amount) return true;
@@ -262,6 +276,14 @@ namespace Clothes.Utils
             return false;
         }
 
+
+        /// <summary>
+        /// Delivers a cloth item to the player's inventory.
+        /// If the item is successfully saved and added to the inventory, it notifies the player.
+        /// </summary>
+        /// <param name="player">The player to receive the cloth item.</param>
+        /// <param name="model">The cloth model to deliver.</param>
+        /// <returns>A boolean indicating whether the cloth item was successfully delivered.</returns>
         public static async Task<bool> DeliverClothItem(Player player, ClothModels model)
         {
             ClothItems clothItem = new ClothItems();

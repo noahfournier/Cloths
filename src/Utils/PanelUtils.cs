@@ -76,12 +76,24 @@ namespace Clothes.Panels
             }
         }
 
+        /// <summary>
+        /// Generates a formatted tab line for a cloth model, including a sex tag and the model name.
+        /// </summary>
+        /// <param name="clothModel">The cloth model to generate the tab line for.</param>
+        /// <returns>A string representing the formatted tab line.</returns>
         public static string GetClothModelTabLine(ClothModels clothModel)
         {
             string sexTag = clothModel.SexId == 0 ? mk.Color("[H]", mk.Colors.Info) : mk.Color("[F]", mk.Colors.Purple);
             return sexTag + " " + clothModel.Name;
         }
 
+
+        /// <summary>
+        /// Generates a formatted tab line for a cloth model, including the price and sale status.
+        /// </summary>
+        /// <param name="clothModel">The cloth model to generate the tab line for.</param>
+        /// <param name="isForSale">A boolean indicating whether the cloth model is for sale.</param>
+        /// <returns>A string representing the formatted tab line.</returns>
         public static string GetClothModelPriceTabLine(ClothModels clothModel, bool isForSale)
         {
             string price = mk.Color($"{clothModel.Price}€", mk.Colors.Warning);

@@ -39,9 +39,6 @@ namespace Clothes
             await PopulateDb();       
             await CacheManager.InitializeCacheAsync();
 
-            Orm.RegisterTable<ClothShopPoint>();
-            MCheckpointHelper.RegisterType(typeof(ClothShopPoint));
-
             GenerateCommands();
 
             ModKit.Internal.Logger.LogSuccess($"{PluginInformations.SourceName} v{PluginInformations.Version}", "initialisé");
@@ -70,8 +67,11 @@ namespace Clothes
                 Task.Run(() => Orm.RegisterTable<ClothModels>()),
                 Task.Run(() => Orm.RegisterTable<ClothItems>()),
                 Task.Run(() => Orm.RegisterTable<CharacterInventories>()),
-                Task.Run(() => Orm.RegisterTable<AreaInventories>())
+                Task.Run(() => Orm.RegisterTable<AreaInventories>()),
+                Task.Run(() => Orm.RegisterTable<ClothShopPoint>())
             };
+            
+            MCheckpointHelper.RegisterType(typeof(ClothShopPoint));
 
             await Task.WhenAll(tasks);
         }

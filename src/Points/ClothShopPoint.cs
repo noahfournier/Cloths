@@ -14,7 +14,6 @@ using Clothes.Entities;
 using Clothes.Panels;
 using System.Linq;
 using Clothes.Entities.CompositeEntities;
-using Life.AreaSystem;
 
 namespace Clothes.Points
 {
