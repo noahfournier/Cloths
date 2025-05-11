@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Clothes.Config;
 using Clothes.Entities;
 using Clothes.Entities.CompositeEntities;
 using Life.InventorySystem;
 using Life.Network;
+using ModKit.Helper;
+using ModKit.Utils;
 using Newtonsoft.Json;
 
 namespace Clothes.Utils
@@ -241,6 +244,47 @@ namespace Clothes.Utils
                 default:
                     return "Inconnu";
             }
+        }
+
+        public static async Task<bool> HasAvailableSlotsInBackpack(Player player)
+        {
+            var query = await CharacterInventories.Query(i => i.CharacterId == player.character.Id);
+            var backpackItemsCount = query.Count();
+            var result = backpackItemsCount < ClothesConfig.Data.MaxBackpackSlots;
+            if(!result) player.Notify("Clothes", "Votre sac à dos est plein !", Life.NotificationManager.Type.Info);
+            return result;
+        }
+
+        public static bool CanBuyItem(Player player, double amount)
+        {
+            if (player.Money >= amount) return true;
+            else player.Notify("Information", "Vous n'avez pas suffisament d'argent pour cette achat", Life.NotificationManager.Type.Info);
+            return false;
+        }
+
+        public static async Task<bool> DeliverClothItem(Player player, ClothModels model)
+        {
+            ClothItems clothItem = new ClothItems();
+            clothItem.ClothModelId = model.Id;
+            clothItem.IsDirty = false;
+            clothItem.CreatedAt = DateUtils.GetCurrentTime();
+            if (await clothItem.Save())
+            {
+                CharacterInventories characterInventories = new CharacterInventories();
+                characterInventories.CharacterId = player.character.Id;
+                characterInventories.ClothItemId = clothItem.Id;
+                characterInventories.IsEquipped = false;
+
+                if (await characterInventories.Save())
+                {
+                    player.Notify("Clothes", $"Vous venez de reçevoir \"{model.Name}\"", Life.NotificationManager.Type.Success);
+                    return true;
+                }
+                else player.Notify("Clothes", "Erreur lors de l'ajout du vêtement au sac à dos", Life.NotificationManager.Type.Error);
+            }
+            else player.Notify("Clothes", "Erreur lors de la génération du vêtement", Life.NotificationManager.Type.Error);
+
+            return false;
         }
     }
 }

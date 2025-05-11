@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Clothes.Entities;
 using Life.Network;
 using ModKit.Helper;
 using mk = ModKit.Helper.TextFormattingHelper;
@@ -7,6 +8,12 @@ namespace Clothes.Panels
 {
     public static class PanelUtils
     {
+        public static int crossIcon = 196;
+        public static int unknowIcon = 966;
+        public static int blankIcon = 1153;
+        public static int femaleTop = 1110;
+        public static int maleTop = 1111;
+
         /// <summary>
         /// Formats and returns a title panel string with a specified title and subtitle.
         /// </summary>
@@ -67,6 +74,19 @@ namespace Clothes.Panels
                 player.Notify("Clothes", "Erreur lors de la sauvegarde de votre création", Life.NotificationManager.Type.Error);
                 return false;
             }
+        }
+
+        public static string GetClothModelTabLine(ClothModels clothModel)
+        {
+            string sexTag = clothModel.SexId == 0 ? mk.Color("[H]", mk.Colors.Info) : mk.Color("[F]", mk.Colors.Purple);
+            return sexTag + " " + clothModel.Name;
+        }
+
+        public static string GetClothModelPriceTabLine(ClothModels clothModel, bool isForSale)
+        {
+            string price = mk.Color($"{clothModel.Price}€", mk.Colors.Warning);
+            string status = mk.Color($"{(isForSale ? "En boutique" : "En retrait")}", isForSale ? mk.Colors.Success : mk.Colors.Error);
+            return $"{mk.Align($"{price}<br>{status}", mk.Aligns.Center)}";
         }
 
     }

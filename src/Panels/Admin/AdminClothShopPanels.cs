@@ -41,8 +41,7 @@ namespace Clothes.Panels.Admin
             Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Créer un point de vente","Définir le nom de la boutique"), UIPanel.PanelType.Input, player, () => SetNamePanel(player, clothShop));
 
             panel.inputPlaceholder = "Comment souhaitez-vous nommer cette boutique de vêtements";
-
-            
+           
             panel.NextButton("Confirmer", () =>
             {
                 if(panel.inputText.Length >= 3)
