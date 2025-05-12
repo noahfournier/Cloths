@@ -26,31 +26,31 @@ namespace Clothes.Panels.Admin
         {
             Panel panel = Context.PanelHelper.Create("Clothes - Menu Admin", UIPanel.PanelType.TabPrice, player, () => AdminMenuPanel(player));
 
-            panel.AddTabLine($"{mk.Color("Créer un modèle", mk.Colors.Verbose)}", _ =>
+            panel.AddTabLine($"{mk.Color("Créer un modèle", mk.Colors.Verbose)}", "", PanelUtils.unknowIcon, _ =>
             {
                 ClothModels model = new ClothModels();
                 model.CreatedAt = DateUtils.GetCurrentTime();
                 _adminClothModelPanels.SelectSexIdPanel(player, model);
             });
 
-            panel.AddTabLine($"{mk.Color("Liste des modèles", mk.Colors.Verbose)}", _ =>
+            panel.AddTabLine($"{mk.Color("Liste des modèles", mk.Colors.Verbose)}", "", PanelUtils.GetItemIconId(1179), _ =>
             {
                 _adminClothModelPanels.ClothModelMenuPanel(player);
             });
 
-            panel.AddTabLine($"{mk.Color("Générer un vêtement", mk.Colors.Verbose)}", _ =>
+            panel.AddTabLine($"{mk.Color("Générer un vêtement", mk.Colors.Verbose)}", "", PanelUtils.maleTopIcon, _ =>
             {
                 _adminClothItemPanels.SelectClothTypePanel(player);
             });
 
-            panel.AddTabLine($"{mk.Color("Points de ventes", mk.Colors.Verbose)}", _ =>
+            panel.AddTabLine($"{mk.Color("Points de ventes", mk.Colors.Verbose)}", "", PanelUtils.GetItemIconId(1156), _ =>
             {
                 _adminClothShopPanels.ClothShopMenuPanel(player);
             });
 
-            panel.PreviousButton();
-            panel.NextButton("Sélectionner", () => panel.SelectTab());
-            panel.CloseButton();
+            panel.NextButton($"{mk.Color("Sélectionner", mk.Colors.Success)}", () => panel.SelectTab());
+            panel.PreviousButton($"{mk.Color("Retour", mk.Colors.Info)}");
+            panel.CloseButton($"{mk.Color("Fermer", mk.Colors.Error)}");
 
             panel.Display();
         }
