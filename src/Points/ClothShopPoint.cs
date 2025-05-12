@@ -14,6 +14,8 @@ using Clothes.Entities;
 using Clothes.Panels;
 using System.Linq;
 using Clothes.Entities.CompositeEntities;
+using mk = ModKit.Helper.TextFormattingHelper;
+using static Life.InventorySystem.Item;
 
 namespace Clothes.Points
 {
@@ -57,19 +59,26 @@ namespace Clothes.Points
         }
 
         #region PANELS
-        public void ClothShopMenuPanel(Player player)
+        public async void ClothShopMenuPanel(Player player)
         {
+            List<ClothModels> clothModels = await ClothModels.QueryAll();
+            List<ClothModels> clothModelsForSale = clothModels.Where(i => ClothModelIds.Contains(i.Id)).ToList();
+
             Panel panel = Context.PanelHelper.Create($"{Name}", UIPanel.PanelType.TabPrice, player, () => ClothShopMenuPanel(player));
 
             foreach (ClothType clothType in Enum.GetValues(typeof(ClothType)))
             {
-                panel.AddTabLine($"{ClothUtils.ClothTypeTranslater(clothType)}", _ => ClothModelForSalePanel(player, clothType));
+                List<ClothModels> clothModelsByType = clothModelsForSale.Where(i => i.ClothType == (int)clothType).ToList();
+                if(clothModelsByType.Count > 0 || player.serviceAdmin)
+                {
+                    panel.AddTabLine($"{PanelUtils.GetQuantityTagTabLine(clothModelsByType.Count)} {ClothUtils.ClothTypeTranslater(clothType)}", _ => ClothModelForSalePanel(player, clothType, clothModelsByType));
+                }
             }
 
-            panel.NextButton("Sélectionner", () => panel.SelectTab());
-            panel.NextButton("Vendre", () => BackpackToClothShopPanel(player));
-            if (player.IsAdmin && player.serviceAdmin) panel.NextButton("Configurer", () => SetClothModelListPanel(player, (ClothType)panel.selectedTab));
-            panel.CloseButton();
+            panel.NextButton($"{mk.Color("Sélectionner", mk.Colors.Success)}", () => panel.SelectTab());
+            panel.NextButton($"{mk.Color("Vendre", mk.Colors.Warning)}", () => BackpackToClothShopPanel(player));
+            if (player.IsAdmin && player.serviceAdmin) panel.NextButton($"{mk.Color("Configurer", mk.Colors.Orange)}", () => SetClothModelListPanel(player, (ClothType)panel.selectedTab));
+            panel.CloseButton($"{mk.Color("Fermer", mk.Colors.Error)}");
 
             panel.Display();
         }
@@ -82,7 +91,7 @@ namespace Clothes.Points
 
             foreach (ClothRecord clothRecord in clothRecords)
             {
-                panel.AddTabLine($"{ClothUtils.ClothTypeTranslater((ClothType)clothRecord.ClothModels.ClothType)} - {PanelUtils.GetClothModelTabLine(clothRecord.ClothModels)}", async _ =>
+                panel.AddTabLine($"{ClothUtils.ClothTypeTranslater((ClothType)clothRecord.ClothModels.ClothType)} - {PanelUtils.GetClothModelTabLine(clothRecord.ClothModels)}", _ =>
                 {
                     double amount = Math.Round(clothRecord.ClothModels.Price / 2, 2);
                     ConfirmClothingSalePanel(player, clothRecord, amount);
@@ -159,19 +168,38 @@ namespace Clothes.Points
             }
 
             panel.NextButton("Ajouter/Retirer", () => panel.SelectTab());
-            //bouton pour modifier un le prix par défaut de l'item sélectionné ? (plus flex)
+            panel.NextButton("Modifier le prix", () => SetPricePanel(player, clothModels[panel.selectedTab]));
             panel.PreviousButton();
             panel.CloseButton();
 
             panel.Display();
         }
 
-        public async void ClothModelForSalePanel(Player player, ClothType clothType)
+        public void SetPricePanel(Player player, ClothModels model)
         {
-            List<ClothModels> clothModels = await ClothModels.Query(i => i.ClothType == (int)clothType);
-            List<ClothModels> clothModelsForSale = clothModels.Where(i => ClothModelIds.Contains(i.Id)).ToList();
+            Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel($"Modifier un modèle", "Définir le prix"), UIPanel.PanelType.Input, player, () => SetPricePanel(player, model));
 
-            Panel panel = Context.PanelHelper.Create($"{Name} - {clothType}", UIPanel.PanelType.TabPrice, player, () => ClothModelForSalePanel(player, clothType));
+            panel.SetInputPlaceholder("Renseigner le prix en séparant les centimes par une virgule.");
+
+            panel.PreviousButtonWithAction($"{mk.Color("Confirmer", mk.Colors.Success)}", async () =>
+            {
+                if (double.TryParse(panel.inputText, out double price) && price >= 0)
+                {
+                    model.Price = Math.Round(price, 2);
+                    return await PanelUtils.QueryUpdateResponse(player, model.Save());
+                }
+                else player.Notify(PanelUtils.pluginName, "Prix invalide", Life.NotificationManager.Type.Warning);
+                return false;
+            });
+            panel.PreviousButton($"{mk.Color("Retour", mk.Colors.Info)}");
+            panel.CloseButton($"{mk.Color("Fermer", mk.Colors.Error)}");
+
+            panel.Display();
+        }
+
+        public void ClothModelForSalePanel(Player player, ClothType clothType, List<ClothModels> clothModelsForSale)
+        {
+            Panel panel = Context.PanelHelper.Create($"{Name} - {clothType}", UIPanel.PanelType.TabPrice, player, () => ClothModelForSalePanel(player, clothType, clothModelsForSale));
 
             foreach (ClothModels clothModel in clothModelsForSale)
             {

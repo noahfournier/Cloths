@@ -25,18 +25,18 @@ namespace Clothes.Panels.Admin
         {
             Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Générer un vêtement", "Choisir le type selon le sexe"), UIPanel.PanelType.TabPrice, player, () => SelectClothTypePanel(player));
 
-            foreach (var clothType in Enum.GetValues(typeof(ClothType)))
+            foreach (ClothType clothType in Enum.GetValues(typeof(ClothType)))
             {
                 List<ClothModels> maleModels = Clothes.CacheManager.ClothModelsCache.Cache.Where(m => m.Value.SexId == 0 && m.Value.ClothType == (int)clothType).Select(m => m.Value).ToList();
-                if(maleModels.Count > 0) panel.AddTabLine($"{mk.Color("[H]", mk.Colors.Info)} {clothType}", _ => SelectClothModelPanel(player, maleModels));
+                if(maleModels.Count > 0) panel.AddTabLine($"{mk.Color("[H]", mk.Colors.Info)} {ClothUtils.ClothTypeTranslater(clothType)}", _ => SelectClothModelPanel(player, maleModels));
 
                 List<ClothModels> femaleModels = Clothes.CacheManager.ClothModelsCache.Cache.Where(m => m.Value.SexId == 1 && m.Value.ClothType == (int)clothType).Select(m => m.Value).ToList();
-                if (femaleModels.Count > 0) panel.AddTabLine($"{mk.Color("[F]", mk.Colors.Purple)} {clothType}", _ => SelectClothModelPanel(player, femaleModels));
+                if (femaleModels.Count > 0) panel.AddTabLine($"{mk.Color("[F]", mk.Colors.Purple)} {ClothUtils.ClothTypeTranslater(clothType)}", _ => SelectClothModelPanel(player, femaleModels));
             }
 
-            panel.PreviousButton();
-            panel.NextButton("Sélectionner", () => panel.SelectTab());
-            panel.CloseButton();
+            panel.NextButton($"{mk.Color("Sélectionner", mk.Colors.Success)}", () => panel.SelectTab());
+            panel.PreviousButton($"{mk.Color("Retour", mk.Colors.Info)}");
+            panel.CloseButton($"{mk.Color("Fermer", mk.Colors.Error)}");
 
             panel.Display();
         }
@@ -50,14 +50,14 @@ namespace Clothes.Panels.Admin
                 panel.AddTabLine($"{model.Name}", _ => { });
             }
 
-            panel.NextButton("Sélectionner", () => SetCharacterPanel(player, models[panel.selectedTab]));
-            panel.AddButton("Prévisualiser", _ =>
+            panel.NextButton($"{mk.Color("Sélectionner", mk.Colors.Success)}", () => panel.SelectTab());
+            panel.AddButton($"{mk.Color("Prévisualiser", mk.Colors.Warning)}", _ =>
             {
                 ClothUtils.PreviewClothing(player, models[panel.selectedTab]);
                 panel.Refresh();
             });
-            panel.PreviousButton();
-            panel.CloseButton();
+            panel.PreviousButton($"{mk.Color("Retour", mk.Colors.Info)}");
+            panel.CloseButton($"{mk.Color("Fermer", mk.Colors.Error)}");
 
             panel.Display();
         }
@@ -98,9 +98,9 @@ namespace Clothes.Panels.Admin
                 });
             }
 
-            panel.AddButton("Confirmer", _ => panel.SelectTab());
-            panel.PreviousButton();
-            panel.CloseButton();
+            panel.AddButton($"{mk.Color("Confirmer", mk.Colors.Success)}", _ => panel.SelectTab());
+            panel.PreviousButton($"{mk.Color("Retour", mk.Colors.Info)}");
+            panel.CloseButton($"{mk.Color("Fermer", mk.Colors.Error)}");
 
             panel.Display();
         }

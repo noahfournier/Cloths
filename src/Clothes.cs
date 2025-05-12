@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Clothes.Cache;
 using Clothes.Config;
@@ -10,6 +11,7 @@ using Life;
 using Life.Network;
 using ModKit.Helper;
 using ModKit.Interfaces;
+using ModKit.Internal;
 using ModKit.Utils;
 
 namespace Clothes
@@ -34,14 +36,16 @@ namespace Clothes
             base.OnPluginInit();
 
             await InitConfiguration();
-            await InitDatabase();
-            await InitClothModels();
-            await PopulateDb();       
+            if(await InitDatabase())
+            {
+                await InitClothModels();
+                await PopulateDb();
+            }                   
             await CacheManager.InitializeCacheAsync();
 
             GenerateCommands();
 
-            ModKit.Internal.Logger.LogSuccess($"{PluginInformations.SourceName} v{PluginInformations.Version}", "initialisé");
+            Logger.LogSuccess($"{PluginInformations.SourceName} v{PluginInformations.Version}", "initialisé");
         }
 
         /// <summary>
@@ -58,22 +62,32 @@ namespace Clothes
         }
 
         /// <summary>
-        /// Initializes the database
+        /// Initializes the database by registering all necessary tables.
         /// </summary>
-        public async Task InitDatabase()
+        /// <returns>A boolean indicating whether the database initialization was successful.</returns>
+        public async Task<bool> InitDatabase()
         {
-            var tasks = new List<Task>
+            try
             {
-                Task.Run(() => Orm.RegisterTable<ClothModels>()),
-                Task.Run(() => Orm.RegisterTable<ClothItems>()),
-                Task.Run(() => Orm.RegisterTable<CharacterInventories>()),
-                Task.Run(() => Orm.RegisterTable<AreaInventories>()),
-                Task.Run(() => Orm.RegisterTable<ClothShopPoint>())
-            };
-            
-            MCheckpointHelper.RegisterType(typeof(ClothShopPoint));
+                var tasks = new List<Task>
+                {
+                    Task.Run(() => Orm.RegisterTable<ClothModels>()),
+                    Task.Run(() => Orm.RegisterTable<ClothItems>()),
+                    Task.Run(() => Orm.RegisterTable<CharacterInventories>()),
+                    Task.Run(() => Orm.RegisterTable<AreaInventories>()),
+                    Task.Run(() => Orm.RegisterTable<ClothShopPoint>())
+                };
 
-            await Task.WhenAll(tasks);
+                MCheckpointHelper.RegisterType(typeof(ClothShopPoint));
+
+                await Task.WhenAll(tasks);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError("InitDatabase", $"Erreur lors de l'initialisation de la base de données: {ex.Message}");
+                return false;
+            }
         }
 
         /// <summary>

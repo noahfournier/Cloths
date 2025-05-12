@@ -3,6 +3,7 @@ using Life;
 using Life.Network;
 using Life.UI;
 using ModKit.Helper;
+using mk = ModKit.Helper.TextFormattingHelper;
 
 namespace Clothes.Panels.Admin
 {
@@ -17,7 +18,7 @@ namespace Clothes.Panels.Admin
 
         public void ClothShopMenuPanel(Player player)
         {
-            Panel panel = Context.PanelHelper.Create("Clothes - Points de ventes", UIPanel.PanelType.TabPrice, player, () => ClothShopMenuPanel(player));
+            Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Points de ventes"), UIPanel.PanelType.Tab, player, () => ClothShopMenuPanel(player));
 
             panel.AddTabLine("Créer un point de vente", _ =>
             {
@@ -27,9 +28,9 @@ namespace Clothes.Panels.Admin
 
             panel.AddTabLine("Liste des points de ventes", async _ => await Context.MCheckpointHelper.OpenMenu<ClothShopPoint>(player));
 
-            panel.PreviousButton();
-            panel.NextButton("Sélectionner", () => panel.SelectTab());
-            panel.CloseButton();
+            panel.NextButton($"{mk.Color("Sélectionner", mk.Colors.Success)}", () => panel.SelectTab());
+            panel.PreviousButton($"{mk.Color("Retour", mk.Colors.Info)}");
+            panel.CloseButton($"{mk.Color("Fermer", mk.Colors.Error)}");
 
             panel.Display();
         }
@@ -40,7 +41,7 @@ namespace Clothes.Panels.Admin
 
             panel.inputPlaceholder = "Comment souhaitez-vous nommer cette boutique de vêtements";
            
-            panel.NextButton("Confirmer", () =>
+            panel.NextButton($"{mk.Color("Confirmer", mk.Colors.Success)}", () =>
             {
                 if(panel.inputText.Length >= 3)
                 {
@@ -52,8 +53,8 @@ namespace Clothes.Panels.Admin
                     panel.Refresh();
                 }
             });
-            panel.PreviousButton();
-            panel.CloseButton();
+            panel.PreviousButton($"{mk.Color("Retour", mk.Colors.Info)}");
+            panel.CloseButton($"{mk.Color("Fermer", mk.Colors.Error)}");
 
             panel.Display();
         }
@@ -69,17 +70,17 @@ namespace Clothes.Panels.Admin
             panel.TextLines.Add("Voulez-vous générer le point sur votre position ?");
             panel.TextLines.Add("Sa position peut être modifiée ultérieurement.");
 
-            panel.CloseButtonWithAction("Générer", async () =>
+            panel.CloseButtonWithAction($"{mk.Color("Générer", mk.Colors.Success)}", async () =>
             {
                 return await PanelUtils.QueryCreateResponse(player, clothShop.Create(player));
             });
-            panel.CloseButtonWithAction("Sauvegarder", async () =>
+            panel.CloseButtonWithAction($"{mk.Color("Sauvegarder", mk.Colors.Warning)}", async () =>
             {
                 return await PanelUtils.QueryCreateResponse(player, clothShop.Save());
 
             });
-            panel.Previous();
-            panel.CloseButton();
+            panel.PreviousButton($"{mk.Color("Retour", mk.Colors.Info)}");
+            panel.CloseButton($"{mk.Color("Fermer", mk.Colors.Error)}");
 
             panel.Display();
         }

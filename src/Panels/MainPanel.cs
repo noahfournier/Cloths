@@ -5,6 +5,7 @@ using Clothes.Panels.Backpack;
 using Clothes.Panels.Admin;
 using Life.AreaSystem;
 using Clothes.Panels.Wardrobe;
+using mk = ModKit.Helper.TextFormattingHelper;
 
 namespace Clothes.Panels
 {
@@ -25,26 +26,28 @@ namespace Clothes.Panels
 
         public void MenuPanel(Player player)
         {
-            Panel panel = Context.PanelHelper.Create("Cloths - Menu", UIPanel.PanelType.TabPrice, player, () => MenuPanel(player));
+            Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel(), UIPanel.PanelType.TabPrice, player, () => MenuPanel(player));
 
-            panel.AddTabLine("Menu Admin", _ => _adminPanels.AdminMenuPanel(player));
-            panel.AddTabLine("Sac à dos", _ => _backpackPanels.BackpackMenuPanel(player));
-            panel.AddTabLine("Garde-robe", _ =>
+            if(player.IsAdmin) panel.AddTabLine($"{mk.Color("Menu Admin", mk.Colors.Orange)}", _ => _adminPanels.AdminMenuPanel(player));
+            panel.AddTabLine("Sac à dos", "", player.character.SexId == 0 ? PanelUtils.maleTopIcon : PanelUtils.femaleTopIcon, _ => _backpackPanels.BackpackMenuPanel(player));
+            panel.AddTabLine("Garde-robe", "", PanelUtils.GetItemIconId(1008), _ =>
             {
                 AreaObject wardrobe = Utils.EnvironmentUtils.DetectNearbyWardrobe(player);
-                if (wardrobe.areaInstance.lifeArea.permissions.HasPermission(player.character.Id))
+                if(wardrobe != null)
                 {
-                    _wardrobePanels.WardrobeMenuPanel(player, wardrobe.areaInstance.lifeArea);
-                }
-                else
-                {
-                    player.Notify("Clothes", "Vous n'avez pas la permission d'accéder à cette garde-robe", Life.NotificationManager.Type.Info);
-                    panel.Refresh();
-                }
+                    if (wardrobe.areaInstance.lifeArea.permissions.HasPermission(player.character.Id))
+                    {
+                        _wardrobePanels.WardrobeMenuPanel(player, wardrobe.areaInstance.lifeArea);
+                        return;
+                    }
+                    else player.Notify("Clothes", "Vous n'avez pas la permission d'accéder à cette garde-robe", Life.NotificationManager.Type.Info);
+                } else player.Notify("Clothes", "Il n'y a aucune penderie à votre proximité", Life.NotificationManager.Type.Info);
+
+                panel.Refresh();
             });
 
-            panel.NextButton("Sélectionner", () => panel.SelectTab());
-            panel.CloseButton();
+            panel.NextButton($"{mk.Color("Sélectionner", mk.Colors.Success)}", () => panel.SelectTab());
+            panel.CloseButton($"{mk.Color("Fermer", mk.Colors.Error)}");
 
             panel.Display();
         }

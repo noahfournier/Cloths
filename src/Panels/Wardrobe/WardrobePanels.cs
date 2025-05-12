@@ -10,6 +10,7 @@ using Life.InventorySystem;
 using Life.Network;
 using Life.UI;
 using ModKit.Helper;
+using mk = ModKit.Helper.TextFormattingHelper;
 
 namespace Clothes.Panels.Wardrobe
 {
@@ -27,13 +28,13 @@ namespace Clothes.Panels.Wardrobe
             string wardrobeSlots = ClothesConfig.Data.MaxWardrobeSlots > 0 ? ClothesConfig.Data.MaxWardrobeSlots.ToString() : "infini";
             List<ClothRecord> allClothRecords = await AreaInventories.GetInventoryForAreaAsync((int)area.areaId);
 
-            Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Garde-robe", $"[emplacements: {allClothRecords.Count} / {wardrobeSlots}]"), UIPanel.PanelType.TabPrice, player, () => WardrobeMenuPanel(player, area));
+            Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Garde-robe", $"[emplacements: {allClothRecords.Count} / {wardrobeSlots}]"), UIPanel.PanelType.Tab, player, () => WardrobeMenuPanel(player, area));
 
             foreach (ClothType clothType in Enum.GetValues(typeof(ClothType)))
             {
                 List<ClothRecord> clothRecords = allClothRecords.Where(i => i.ClothModels.ClothType == (int)clothType).ToList();
 
-                panel.AddTabLine($"[{(clothRecords.Count > 0 ? $"Quantité: {clothRecords.Count}" : "Vide")}] {clothType}", _ =>
+                panel.AddTabLine($"{mk.Color($"[{(clothRecords.Count > 0 ? $"Quantité: {clothRecords.Count}" : "Vide")}]", mk.Colors.Info)} {ClothUtils.ClothTypeTranslater(clothType)}", _ =>
                 {
                     if (clothRecords.Count > 0) WardrobeToBackpack(player, clothType, clothRecords);
                     else
@@ -44,17 +45,17 @@ namespace Clothes.Panels.Wardrobe
                 });
             }
 
-            panel.PreviousButton();
-            panel.NextButton("Sélectionner", () => panel.SelectTab());
-            panel.NextButton("Déposer", () => BackpackToWardrobePanel(player, area));
-            panel.CloseButton();
+            panel.NextButton($"{mk.Color("Sélectionner", mk.Colors.Success)}", () => panel.SelectTab());
+            panel.NextButton($"{mk.Color("Déposer", mk.Colors.Warning)}", () => BackpackToWardrobePanel(player, area));
+            panel.PreviousButton($"{mk.Color("Retour", mk.Colors.Info)}");
+            panel.CloseButton($"{mk.Color("Fermer", mk.Colors.Error)}");
 
             panel.Display();
         }
 
         public void WardrobeToBackpack(Player player, ClothType clothType, List<ClothRecord> clothRecords)
         {
-            Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Garde-robe", $"Vos {clothType}"), UIPanel.PanelType.TabPrice, player, () => WardrobeToBackpack(player, clothType, clothRecords));
+            Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Garde-robe", $"Vos {ClothUtils.ClothTypeTranslater(clothType)}"), UIPanel.PanelType.Tab, player, () => WardrobeToBackpack(player, clothType, clothRecords));
 
             foreach (ClothRecord clothRecord in clothRecords)
             {
@@ -79,9 +80,9 @@ namespace Clothes.Panels.Wardrobe
                 });
             }
 
-            panel.AddButton("Récupérer", _ => panel.SelectTab());           
-            panel.PreviousButton();
-            panel.CloseButton();
+            if(clothRecords.Count > 0) panel.NextButton($"{mk.Color("Récupérer", mk.Colors.Success)}", () => panel.SelectTab());
+            panel.PreviousButton($"{mk.Color("Retour", mk.Colors.Info)}");
+            panel.CloseButton($"{mk.Color("Fermer", mk.Colors.Error)}");
 
             panel.Display();
         }
@@ -90,7 +91,7 @@ namespace Clothes.Panels.Wardrobe
         {
             List<ClothRecord> clothRecords = await CharacterInventories.GetInventoryForCharacterAsync(player.character.Id);
 
-            Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Garde-robe", $"Sélectionner les vêtements à déposer depuis votre sac à dos"), UIPanel.PanelType.TabPrice, player, () => BackpackToWardrobePanel(player, area));
+            Panel panel = Context.PanelHelper.Create(PanelUtils.SetTitlePanel("Garde-robe", $"Sélectionner les vêtements à déposer"), UIPanel.PanelType.Tab, player, () => BackpackToWardrobePanel(player, area));
 
             foreach (ClothRecord clothRecord in clothRecords)
             {
@@ -112,8 +113,9 @@ namespace Clothes.Panels.Wardrobe
                 });
             }
 
-            panel.NextButton("Sélectionner", () => panel.SelectTab());
-            panel.PreviousButton();
+            if(clothRecords.Count > 0) panel.AddButton($"{mk.Color("Sélectionner", mk.Colors.Success)}", _ => panel.SelectTab());
+            panel.PreviousButton($"{mk.Color("Retour", mk.Colors.Info)}");
+            panel.CloseButton($"{mk.Color("Fermer", mk.Colors.Error)}");
 
             panel.Display();
         }
