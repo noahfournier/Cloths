@@ -25,7 +25,7 @@ namespace Clothes
         
         public Clothes(IGameAPI api) : base(api)
         {
-            PluginInformations = new PluginInformations(AssemblyHelper.GetName(), "1.0.0", "Noah with MODNL");
+            PluginInformations = new PluginInformations(AssemblyHelper.GetName(), "1.0.0", "MODNL");
             EventManager = new EventManager();
             CacheManager = new CacheManager();
             MainPanel = new MainPanel(this);

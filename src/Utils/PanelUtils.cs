@@ -106,10 +106,21 @@ namespace Clothes.Panels
             return $"{mk.Align($"{price}<br>{status}", mk.Aligns.Center)}";
         }
 
+        /// <summary>
+        /// Generates a formatted tab line for a quantity tag, indicating the quantity or if it is empty.
+        /// </summary>
+        /// <param name="count">The quantity count to generate the tab line for.</param>
+        /// <returns>A string representing the formatted tab line.</returns>
         public static string GetQuantityTagTabLine(int count)
         {
             return mk.Color($"[{(count > 0 ? $"Quantité: {count}" : "Vide")}]", mk.Colors.Info);
         }
+
+        /// <summary>
+        /// Retrieves the icon ID for a given item ID.
+        /// </summary>
+        /// <param name="itemId">The ID of the item to retrieve the icon for.</param>
+        /// <returns>The icon ID if the item is found, otherwise returns the crossIcon.</returns>
         public static int GetItemIconId(int itemId)
         {
             var item = Nova.man.item.GetItem(itemId);
